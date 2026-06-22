@@ -18,4 +18,10 @@ public interface EventService {
     Page<EventDTO> findByCategory(String category, Pageable pageable);
     Page<EventDTO> findByDynasty(String dynastyName, Pageable pageable);
     Page<EventDTO> findByYearRange(Integer start, Integer end, Pageable pageable);
+
+    /** 后台管理：创建或更新 */
+    EventDTO createOrUpdate(EventDTO dto);
+
+    /** 后台管理：删除 */
+    void deleteById(Long id);
 }

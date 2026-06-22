@@ -15,4 +15,13 @@ public interface PersonService {
     Page<PersonDTO> findByGender(String gender, Pageable pageable);
     Page<PersonDTO> findByDynasty(String dynastyName, Pageable pageable);
     Page<PersonDTO> findByRole(String role, Pageable pageable);
+
+    /** 后台管理：创建或更新 */
+    PersonDTO createOrUpdate(PersonDTO dto);
+
+    /** 后台管理：删除 */
+    void deleteById(Long id);
+
+    /** 按年代排序获取所有人物 */
+    java.util.List<PersonDTO> findAllOrdered();
 }

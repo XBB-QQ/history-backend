@@ -66,6 +66,36 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findByYearBetween(start, end, pageable).map(this::toDTO);
     }
 
+    @Override
+    @Transactional
+    public EventDTO createOrUpdate(EventDTO dto) {
+        EventEntity entity;
+        if (dto.getId() != null) {
+            entity = eventRepository.findById(dto.getId())
+                .orElseThrow(() -> new com.history.exception.ResourceNotFoundException("事件", dto.getId()));
+        } else {
+            entity = new EventEntity();
+        }
+        entity.setUid(dto.getUid());
+        entity.setTitle(dto.getTitle());
+        entity.setYear(dto.getYear());
+        entity.setYearDisplay(dto.getYearDisplay());
+        entity.setYearPrecision(dto.getYearPrecision());
+        entity.setCategory(dto.getCategory());
+        entity.setDescription(dto.getDescription());
+        entity.setFulltext(dto.getFulltext());
+        entity.setTags(dto.getTags() != null ? dto.getTags() : java.util.List.of());
+        entity.setRelatedEvents(dto.getRelatedEvents() != null ? dto.getRelatedEvents() : java.util.List.of());
+        entity.setRelatedPersons(dto.getRelatedPersons() != null ? dto.getRelatedPersons() : java.util.List.of());
+        return toDTO(eventRepository.save(entity));
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(Long id) {
+        eventRepository.deleteById(id);
+    }
+
     private EventDTO toDTO(EventEntity entity) {
         return EventDTO.builder()
                 .id(entity.getId())

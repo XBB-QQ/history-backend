@@ -74,4 +74,41 @@ public class PersonServiceImpl implements PersonService {
                 .relatedPersons(entity.getRelatedPersons())
                 .build();
     }
+
+    @Override
+    @Transactional
+    public PersonDTO createOrUpdate(PersonDTO dto) {
+        PersonEntity entity;
+        if (dto.getId() != null) {
+            entity = personRepository.findById(dto.getId())
+                .orElseThrow(() -> new com.history.exception.ResourceNotFoundException("人物", dto.getId()));
+        } else {
+            entity = new PersonEntity();
+        }
+        entity.setUid(dto.getUid());
+        entity.setName(dto.getName());
+        entity.setCourtesyName(dto.getCourtesyName());
+        entity.setYearsDisplay(dto.getYearsDisplay());
+        entity.setGender(dto.getGender());
+        entity.setRoles(dto.getRoles() != null ? dto.getRoles() : java.util.List.of());
+        entity.setQuote(dto.getQuote());
+        entity.setBio(dto.getBio());
+        entity.setTags(dto.getTags() != null ? dto.getTags() : java.util.List.of());
+        entity.setRelatedEvents(dto.getRelatedEvents() != null ? dto.getRelatedEvents() : java.util.List.of());
+        entity.setRelatedPersons(dto.getRelatedPersons() != null ? dto.getRelatedPersons() : java.util.List.of());
+        return toDTO(personRepository.save(entity));
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(Long id) {
+        personRepository.deleteById(id);
+    }
+
+    @Override
+    public java.util.List<PersonDTO> findAllOrdered() {
+        return personRepository.findAll().stream()
+                .map(this::toDTO)
+                .toList();
+    }
 }
