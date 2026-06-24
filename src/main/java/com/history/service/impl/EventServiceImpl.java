@@ -96,6 +96,9 @@ public class EventServiceImpl implements EventService {
         entity.setImpact(dto.getImpact());
         entity.setSignificance(dto.getSignificance());
         entity.setRelatedArticles(dto.getRelatedArticles() != null ? dto.getRelatedArticles() : java.util.List.of());
+        entity.setClassicalText(dto.getClassicalText());
+        entity.setClassicalSource(dto.getClassicalSource());
+        entity.setModernTranslation(dto.getModernTranslation());
         return toDTO(eventRepository.save(entity));
     }
 
@@ -123,6 +126,9 @@ public class EventServiceImpl implements EventService {
                 .impact(entity.getImpact())
                 .significance(entity.getSignificance())
                 .relatedArticles(entity.getRelatedArticles())
+                .classicalText(entity.getClassicalText())
+                .classicalSource(entity.getClassicalSource())
+                .modernTranslation(entity.getModernTranslation())
                 .build();
     }
 

@@ -31,4 +31,10 @@ public class EventDTO {
     private String impact;
     private Integer significance;
     private List<String> relatedArticles;
+    /** 史书原文片段（古文） */
+    private String classicalText;
+    /** 史书出处（如《史记·秦始皇本纪》） */
+    private String classicalSource;
+    /** 白话译文 */
+    private String modernTranslation;
 }

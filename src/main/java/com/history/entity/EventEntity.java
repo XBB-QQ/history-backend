@@ -91,6 +91,18 @@ public class EventEntity {
     @Builder.Default
     private java.util.List<String> relatedArticles = new java.util.ArrayList<>();
 
+    /** 史书原文片段（古文） */
+    @Column(columnDefinition = "TEXT")
+    private String classicalText;
+
+    /** 史书出处（如《史记·秦始皇本纪》） */
+    @Column(length = 200)
+    private String classicalSource;
+
+    /** 白话译文 */
+    @Column(columnDefinition = "TEXT")
+    private String modernTranslation;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime crawlDate;
