@@ -57,4 +57,40 @@ public class KnowledgeCardServiceImpl implements KnowledgeCardService {
                 .meta(entity.getMeta())
                 .build();
     }
+
+    @Override
+    @Transactional
+    public KnowledgeCardDTO createOrUpdate(KnowledgeCardDTO dto) {
+        KnowledgeCardEntity entity;
+        if (dto.getId() != null) {
+            entity = knowledgeCardRepository.findById(dto.getId())
+                .orElseThrow(() -> new com.history.exception.ResourceNotFoundException("知识卡片", dto.getId()));
+        } else {
+            entity = new KnowledgeCardEntity();
+        }
+        entity.setUid(dto.getUid());
+        entity.setTitle(dto.getTitle());
+        entity.setStartYear(dto.getStartYear());
+        entity.setStartYearDisplay(dto.getStartYearDisplay());
+        entity.setDescription(dto.getDescription());
+        entity.setFulltext(dto.getFulltext());
+        entity.setTags(dto.getTags() != null ? dto.getTags() : java.util.List.of());
+        entity.setRelevantEvents(dto.getRelevantEvents() != null ? dto.getRelevantEvents() : java.util.List.of());
+        entity.setRelevantPersons(dto.getRelevantPersons() != null ? dto.getRelevantPersons() : java.util.List.of());
+        entity.setMeta(dto.getMeta());
+        return toDTO(knowledgeCardRepository.save(entity));
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(Long id) {
+        knowledgeCardRepository.deleteById(id);
+    }
+
+    @Override
+    public java.util.List<KnowledgeCardDTO> findAllOrdered() {
+        return knowledgeCardRepository.findAll().stream()
+                .map(this::toDTO)
+                .toList();
+    }
 }

@@ -62,4 +62,44 @@ public class DynastyServiceImpl implements DynastyService {
                 .legacy(entity.getLegacy())
                 .build();
     }
+
+    @Override
+    @Transactional
+    public DynastyDTO createOrUpdate(DynastyDTO dto) {
+        DynastyEntity entity;
+        if (dto.getId() != null) {
+            entity = dynastyRepository.findById(dto.getId())
+                .orElseThrow(() -> new com.history.exception.ResourceNotFoundException("朝代", dto.getId()));
+        } else {
+            entity = new DynastyEntity();
+        }
+        entity.setUid(dto.getUid());
+        entity.setName(dto.getName());
+        entity.setFullName(dto.getFullName());
+        entity.setPeriod(dto.getPeriod());
+        entity.setPeriodStart(dto.getPeriodStart());
+        entity.setPeriodEnd(dto.getPeriodEnd());
+        entity.setFounder(dto.getFounder());
+        entity.setLastRuler(dto.getLastRuler());
+        entity.setCapital(dto.getCapital());
+        entity.setDuration(dto.getDuration());
+        entity.setHighlights(dto.getHighlights());
+        entity.setDescription(dto.getDescription());
+        entity.setFallReason(dto.getFallReason());
+        entity.setLegacy(dto.getLegacy());
+        return toDTO(dynastyRepository.save(entity));
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(Long id) {
+        dynastyRepository.deleteById(id);
+    }
+
+    @Override
+    public java.util.List<DynastyDTO> findAllOrdered() {
+        return dynastyRepository.findAll().stream()
+                .map(this::toDTO)
+                .toList();
+    }
 }

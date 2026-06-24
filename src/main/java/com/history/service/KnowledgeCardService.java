@@ -12,4 +12,13 @@ public interface KnowledgeCardService {
     KnowledgeCardDTO findById(Long id);
     KnowledgeCardDTO findByUid(String uid);
     Page<KnowledgeCardDTO> search(String keyword, Pageable pageable);
+
+    /** 后台管理：创建或更新 */
+    KnowledgeCardDTO createOrUpdate(KnowledgeCardDTO dto);
+
+    /** 后台管理：删除 */
+    void deleteById(Long id);
+
+    /** 按年份排序获取所有知识卡片 */
+    java.util.List<KnowledgeCardDTO> findAllOrdered();
 }

@@ -48,13 +48,16 @@ public class KnowledgeCardEntity {
     private String fulltext;
 
     @ElementCollection
-    private java.util.List<String> tags;
+    @Builder.Default
+    private java.util.List<String> tags = new java.util.ArrayList<>();
 
     @ElementCollection
-    private java.util.List<String> relevantEvents;
+    @Builder.Default
+    private java.util.List<String> relevantEvents = new java.util.ArrayList<>();
 
     @ElementCollection
-    private java.util.List<String> relevantPersons;
+    @Builder.Default
+    private java.util.List<String> relevantPersons = new java.util.ArrayList<>();
 
     /** 元数据（JSON 字符串） */
     @Column(length = 2000)

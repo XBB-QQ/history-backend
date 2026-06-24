@@ -56,7 +56,8 @@ public class PersonEntity {
     private String gender;
 
     @ElementCollection
-    private java.util.List<String> roles;
+    @Builder.Default
+    private java.util.List<String> roles = new java.util.ArrayList<>();
 
     @Column(length = 500)
     private String quote;
@@ -65,13 +66,16 @@ public class PersonEntity {
     private String bio;
 
     @ElementCollection
-    private java.util.List<String> tags;
+    @Builder.Default
+    private java.util.List<String> tags = new java.util.ArrayList<>();
 
     @ElementCollection
-    private java.util.List<String> relatedEvents;
+    @Builder.Default
+    private java.util.List<String> relatedEvents = new java.util.ArrayList<>();
 
     @ElementCollection
-    private java.util.List<String> relatedPersons;
+    @Builder.Default
+    private java.util.List<String> relatedPersons = new java.util.ArrayList<>();
 
     @Column(length = 500)
     private String source;

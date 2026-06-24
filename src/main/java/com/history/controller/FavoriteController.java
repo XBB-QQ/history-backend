@@ -6,13 +6,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * 收藏 API 控制器
+ * 收藏 API 控制器（支持 JWT 认证）
  */
 @RestController
 @RequestMapping("/api/v1/favorites")
@@ -22,8 +24,12 @@ public class FavoriteController {
 
     private final FavoriteService favoriteService;
 
-    /** 默认用户 ID（后续可改为登录用户） */
+    /** 从 SecurityContext 获取当前用户名 */
     private String getCurrentUserId() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.getName() != null) {
+            return auth.getName();
+        }
         return "anonymous";
     }
 
@@ -53,7 +59,6 @@ public class FavoriteController {
     @Operation(summary = "切换置顶")
     public ResponseEntity<FavoriteDTO> togglePin(@PathVariable Long resourceId) {
         favoriteService.togglePin(getCurrentUserId(), resourceId);
-        // 返回更新后的列表（简化处理）
         return ResponseEntity.ok(favoriteService.getFavorites(getCurrentUserId()).stream()
             .filter(f -> f.getResourceId().equals(resourceId))
             .findFirst()

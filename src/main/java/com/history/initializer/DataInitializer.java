@@ -26,7 +26,6 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        // 如果所有表都有数据，跳过初始化
         if (dynastyRepo.count() > 0 && eventRepo.count() > 0 && personRepo.count() > 0) {
             log.info("数据已存在，跳过初始化");
             return;
@@ -171,6 +170,33 @@ public class DataInitializer implements CommandLineRunner {
                 .description("清朝是中国历史上最后一个封建王朝，由满族建立。鼎盛时期疆域达1300多万平方公里，但后期闭关锁国导致落后于世界潮流。")
                 .fallReason("内忧外患，辛亥革命推翻帝制")
                 .legacy("奠定了现代中国版图的基础，但也留下了深刻的历史教训")
+                .build(),
+
+            DynastyEntity.builder()
+                .uid("three-kingdoms").name("三国").fullName("三国时期")
+                .period("220年—280年").periodStart(220).periodEnd(280)
+                .founder("曹丕").lastRuler("刘禅/孙皓/曹奂")
+                .capital("洛阳/成都/建业").duration("60年")
+                .highlights("三国鼎立，人才辈出").description("三国时期是中国历史上重要的分裂时期，魏蜀吴三国鼎立，文化繁荣。")
+                .fallReason("司马氏篡权建立晋朝").legacy("三国演义成为中国文学经典")
+                .build(),
+
+            DynastyEntity.builder()
+                .uid("jin").name("晋").fullName("晋朝")
+                .period("265年—420年").periodStart(265).periodEnd(420)
+                .founder("司马炎").lastRuler("晋恭帝")
+                .capital("洛阳/建康").duration("155年")
+                .highlights("八王之乱、五胡乱华").description("晋朝分为西晋和东晋，西晋短暂统一后爆发八王之乱。")
+                .fallReason("门阀政治腐败").legacy("促进了江南地区开发和玄学盛行")
+                .build(),
+
+            DynastyEntity.builder()
+                .uid("sui").name("隋").fullName("隋朝")
+                .period("581年—618年").periodStart(581).periodEnd(618)
+                .founder("隋文帝杨坚").lastRuler("隋炀帝杨广")
+                .capital("大兴（今西安）").duration("37年")
+                .highlights("科举创立、大运河开凿").description("隋朝结束近三百年分裂，创立科举制度。")
+                .fallReason("隋炀帝暴政").legacy("为唐朝繁荣奠定制度基础")
                 .build()
         );
 
@@ -186,35 +212,40 @@ public class DataInitializer implements CommandLineRunner {
             EventEntity.builder()
                 .uid("yu-jiangshan").title("大禹治水").year(-2100)
                 .yearDisplay("约公元前2100年").yearPrecision("approx")
-                .category("盛世").tags(Arrays.asList("夏朝", "治水", "传说"))
+                .category("盛世")
+                .tags(Arrays.asList("夏朝", "治水", "传说"))
                 .description("大禹带领民众治理洪水，三过家门而不入，最终成功平定水患，赢得万民敬仰。")
                 .fulltext("相传远古时期洪水泛滥，尧帝命鲧治水，九年无功。舜继位后命鲧之子禹继续治水。禹改变父亲堵截的方法，采用疏导为主的方式，历时十三年终于平息水患。")
                 .build(),
             EventEntity.builder()
                 .uid("xia-establish").title("夏朝建立").year(-2070)
                 .yearDisplay("约公元前2070年").yearPrecision("approx")
-                .category("朝代更迭").tags(Arrays.asList("夏朝", "世袭制"))
+                .category("朝代更迭")
+                .tags(Arrays.asList("夏朝", "世袭制"))
                 .description("禹死后，其子启继位，世袭制取代禅让制，标志着中国第一个王朝——夏朝的建立。")
                 .fulltext("大禹治水成功后威望日隆，舜禅让于禹。禹去世后，本应传位给伯益，但其子启夺取了王位，从此'天下为公'变为'天下为家'，世袭制正式确立。")
                 .build(),
             EventEntity.builder()
                 .uid("tang-mie-xia").title("商汤灭夏").year(-1600)
                 .yearDisplay("约公元前1600年").yearPrecision("approx")
-                .category("朝代更迭").tags(Arrays.asList("商朝", "灭夏"))
+                .category("朝代更迭")
+                .tags(Arrays.asList("商朝", "灭夏"))
                 .description("商汤率军伐夏，在鸣条之战中大败夏桀，建立商朝。")
                 .fulltext("夏朝末年，桀荒淫无道，残害忠良，民怨沸腾。商部落首领汤趁机起兵，联合各方诸侯，在鸣条（今河南封丘附近）大败夏桀，夏朝灭亡，商朝建立。")
                 .build(),
             EventEntity.builder()
                 .uid("wu-gang-mie-shang").title("牧野之战·武王伐纣").year(-1046)
                 .yearDisplay("约公元前1046年").yearPrecision("approx")
-                .category("朝代更迭").tags(Arrays.asList("周朝", "伐纣"))
+                .category("朝代更迭")
+                .tags(Arrays.asList("周朝", "伐纣"))
                 .description("周武王姬发率联军在牧野之战中击败商军，商纣王自焚而死，商朝灭亡，周朝建立。")
                 .fulltext("商纣王暴虐无道，杀比干、囚箕子。周武王联合八百诸侯，在牧野（今河南淇县南）决战。商军倒戈，纣王鹿台自焚，商朝灭亡。")
                 .build(),
             EventEntity.builder()
                 .uid("zhuge-liang").title("周公制礼作乐").year(-1040)
                 .yearDisplay("约公元前1040年").yearPrecision("approx")
-                .category("文化").tags(Arrays.asList("周朝", "礼乐"))
+                .category("文化")
+                .tags(Arrays.asList("周朝", "礼乐"))
                 .description("周公旦制定了一套完整的礼乐制度，奠定了中国古代社会秩序和文化传统的基础。")
                 .fulltext("周武王死后，成王年幼，周公摄政。他制礼作乐，建立宗法制、分封制，奠定了中国古代政治制度的基础，被后世儒家尊为圣人。")
                 .build(),
@@ -223,42 +254,48 @@ public class DataInitializer implements CommandLineRunner {
             EventEntity.builder()
                 .uid("qin-unify").title("秦始皇统一六国").year(-221)
                 .yearDisplay("公元前221年").yearPrecision("exact")
-                .category("朝代更迭").tags(Arrays.asList("秦朝", "统一"))
+                .category("朝代更迭")
+                .tags(Arrays.asList("秦朝", "统一"))
                 .description("秦王嬴政先后灭韩、赵、魏、楚、燕、齐六国，完成统一大业，建立中国历史上第一个中央集权制王朝。")
                 .fulltext("公元前230年至前221年，秦始皇先后灭掉六国，结束了春秋战国五百多年的分裂局面。他自称'始皇帝'，推行郡县制、书同文、车同轨、统一度量衡。")
                 .build(),
             EventEntity.builder()
                 .uid("qin-great-wall").title("修筑万里长城").year(-214)
                 .yearDisplay("公元前214年").yearPrecision("exact")
-                .category("盛世").tags(Arrays.asList("秦朝", "防御"))
+                .category("盛世")
+                .tags(Arrays.asList("秦朝", "防御"))
                 .description("秦始皇下令连接和修缮各国长城，形成西起临洮、东至辽东的万里长城，抵御北方游牧民族侵扰。")
                 .fulltext("秦始皇派蒙恬率三十万大军北击匈奴，同时征发百万民夫，将战国时期秦、赵、燕三国长城连接起来，修筑了西起临洮东至辽东的万里长城。")
                 .build(),
             EventEntity.builder()
                 .uid("chen-sheng-wu-guang").title("陈胜吴广起义").year(-209)
                 .yearDisplay("公元前209年").yearPrecision("exact")
-                .category("革命").tags(Arrays.asList("秦朝", "起义"))
+                .category("革命")
+                .tags(Arrays.asList("秦朝", "起义"))
                 .description("大泽乡起义爆发，陈胜吴广率九百戍卒揭竿而起，提出'王侯将相宁有种乎'，拉开了秦末农民战争的序幕。")
                 .fulltext("公元前209年，陈胜、吴广等九百名戍卒被征发前往渔阳，在大泽乡遇雨误期。按照秦法误期当斩，二人遂揭竿而起，成为中国历史上第一次大规模农民起义。")
                 .build(),
             EventEntity.builder()
-                .uid("chu-han-zheng).title("楚汉之争").year(-206)
+                .uid("chu-han-zheng").title("楚汉之争").year(-206)
                 .yearDisplay("公元前206年").yearPrecision("exact")
-                .category("战争").tags(Arrays.asList("汉朝", "争霸"))
+                .category("战争")
+                .tags(Arrays.asList("汉朝", "争霸"))
                 .description("刘邦与项羽争夺天下的战争，最终以垓下之战项羽自刎、刘邦获胜告终，建立了西汉王朝。")
                 .fulltext("秦亡之后，项羽分封十八路诸侯，自封西楚霸王。刘邦暗中积蓄力量，明修栈道暗度陈仓，与项羽展开长达四年的楚汉之争，最终在垓下围困项羽。")
                 .build(),
             EventEntity.builder()
                 .uid("wu-di-dong-zhong-shu").title("汉武帝独尊儒术").year(-136)
                 .yearDisplay("公元前136年").yearPrecision("exact")
-                .category("文化").tags(Arrays.asList("汉朝", "儒学"))
+                .category("文化")
+                .tags(Arrays.asList("汉朝", "儒学"))
                 .description("董仲舒提出'罢黜百家，独尊儒术'，汉武帝采纳建议，将儒家学说确立为国家正统思想，影响中国两千余年。")
                 .fulltext("汉武帝时期，董仲舒提出'天人感应''君权神授'等理论，主张罢黜百家独尊儒术。汉武帝采纳其建议，设立太学，以儒家五经为教学内容，确立了儒学的正统地位。")
                 .build(),
             EventEntity.builder()
                 .uid("si-ma-qian").title("司马迁著《史记》").year(-91)
                 .yearDisplay("约公元前91年").yearPrecision("approx")
-                .category("文化").tags(Arrays.asList("汉朝", "史学"))
+                .category("文化")
+                .tags(Arrays.asList("汉朝", "史学"))
                 .description("司马迁忍辱负重，历时十余年完成中国第一部纪传体通史《史记》，被鲁迅誉为'史家之绝唱，无韵之离骚'。")
                 .fulltext("司马迁继承父业任太史令，因李陵事件获罪受宫刑。他忍辱负重，发愤著书，历时约十四年完成了《史记》。全书一百三十篇，记载了从黄帝到汉武帝三千多年的历史。")
                 .build(),
@@ -267,90 +304,116 @@ public class DataInitializer implements CommandLineRunner {
             EventEntity.builder()
                 .uid("guandu").title("官渡之战").year(200)
                 .yearDisplay("公元200年").yearPrecision("exact")
-                .category("战争").tags(Arrays.asList("三国", "曹操"))
+                .category("战争")
+                .tags(Arrays.asList("三国", "曹操"))
                 .description("曹操以少胜多，在官渡大败袁绍，奠定了统一北方的基础。")
                 .fulltext("建安五年，曹操率军与袁绍在官渡对峙。曹操采纳许攸之计，奇袭乌巢粮仓，一举击溃袁绍主力，为日后统一北方奠定基础。")
                 .build(),
             EventEntity.builder()
                 .uid("chibi").title("赤壁之战").year(208)
                 .yearDisplay("公元208年").yearPrecision("exact")
-                .category("战争").tags(Arrays.asList("三国", "孙权", "刘备"))
+                .category("战争")
+                .tags(Arrays.asList("三国", "孙权", "刘备"))
                 .description("孙刘联军在赤壁以火攻大败曹操八十三万大军，奠定了三国鼎立的基础。")
                 .fulltext("建安十三年，曹操率大军南下，欲一统天下。孙权与刘备联合，周瑜率军在赤壁以火攻大破曹军。此战成为中国历史上最著名的以少胜多的战役之一。")
                 .build(),
             EventEntity.builder()
                 .uid("san-guo-fen-li").title("三国鼎立").year(220)
                 .yearDisplay("公元220年").yearPrecision("exact")
-                .category("朝代更迭").tags(Arrays.asList("三国", "鼎立"))
+                .category("朝代更迭")
+                .tags(Arrays.asList("三国", "鼎立"))
                 .description("曹丕篡汉建魏，刘备称帝建蜀，孙权称帝建吴，三国鼎立局面正式形成。")
                 .fulltext("公元220年曹丕代汉建魏，221年刘备在成都称帝建蜀汉，229年孙权在建业称帝建东吴。三国鼎立局面正式形成，开始了长达六十年的分裂对峙。")
                 .build(),
-
-            // 隋唐
+            EventEntity.builder()
+                .uid("yi-de-jing").title("夷陵之战").year(222)
+                .yearDisplay("公元222年").yearPrecision("exact")
+                .category("战争")
+                .tags(Arrays.asList("三国", "火烧连营"))
+                .description("陆逊在夷陵以火攻大败刘备，奠定了三国鼎立的格局。")
+                .fulltext("章武二年，刘备为报关羽之仇率军伐吴，连营七百里。陆逊坚守不战，待蜀军疲惫后以火攻击溃蜀军，刘备退守白帝城。")
+                .build(),
             EventEntity.builder()
                 .uid("sui-unify").title("隋朝统一全国").year(589)
                 .yearDisplay("公元589年").yearPrecision("exact")
-                .category("朝代更迭").tags(Arrays.asList("隋朝", "统一"))
-                .description("隋文帝杨坚灭陈朝，结束了自西晋末年以来近三百年的分裂局面，重新统一中国。")
-                .fulltext("公元581年杨坚代周建隋，589年派晋王杨广率军南下灭陈，结束了自永嘉之乱以来近三百年的分裂局面，重新统一了中国。")
+                .category("朝代更迭")
+                .tags(Arrays.asList("隋朝", "统一"))
+                .description("隋文帝杨坚灭陈朝，结束了自西晋末年以来近三百年的分裂局面。")
+                .fulltext("公元581年杨坚代周建隋，589年派晋王杨广率军南下灭陈，结束了自永嘉之乱以来近三百年的分裂局面。")
                 .build(),
             EventEntity.builder()
-                .uid("zhenguan").title("贞观之治").year(627)
-                .yearDisplay("公元627年").yearPrecision("exact")
-                .category("盛世").tags(Arrays.asList("唐朝", "李世民"))
-                .description("唐太宗李世民即位，励精图治，任用贤能，虚心纳谏，开创了'贞观之治'的盛世局面。")
-                .fulltext("贞观年间，唐太宗以史为鉴，任用房玄龄、杜如晦、魏徵等贤臣。对外开疆拓土，对内轻徭薄赋，政治清明，经济繁荣，史称'贞观之治'。")
+                .uid("sui-ke-ju").title("科举制度创立").year(605)
+                .yearDisplay("公元605年").yearPrecision("exact")
+                .category("改革")
+                .tags(Arrays.asList("隋朝", "科举"))
+                .description("隋炀帝创立进士科，标志着科举制度的诞生，影响了中国一千三百多年。")
+                .fulltext("大业元年，隋炀帝创立进士科，通过考试选拔人才，打破了门阀世族的垄断，使平民子弟有机会通过读书改变命运。")
                 .build(),
             EventEntity.builder()
-                .uid("kaiyuan").title("开元盛世").year(713)
-                .yearDisplay("公元713年").yearPrecision("exact")
-                .category("盛世").tags(Arrays.asList("唐朝", "唐玄宗"))
-                .description("唐玄宗李隆基前期励精图治，任用姚崇、宋璟等贤相，唐朝达到鼎盛，史称'开元盛世'。")
-                .fulltext("开元年间，唐玄宗前期任用姚崇、宋璟、张九龄等贤相，整顿吏治，发展经济，提倡文教。此时唐朝国力达到顶峰，人口众多，文化繁荣，被誉为中国古代最辉煌的时期。")
+                .uid("sui-da-yun").title("大运河开凿").year(605)
+                .yearDisplay("公元605年").yearPrecision("exact")
+                .category("盛世")
+                .tags(Arrays.asList("隋朝", "工程"))
+                .description("隋炀帝征发百万民夫开凿大运河，连接五大水系，成为南北交通大动脉。")
+                .fulltext("大业元年，隋唐帝下令开凿大运河，以洛阳为中心，北抵涿郡，南至余杭，全长约2700公里，是世界古代最长的运河工程。")
                 .build(),
             EventEntity.builder()
-                .uid("anshi-zhi-luan").title("安史之乱").year(755)
+                .uid("an-shi").title("安史之乱").year(755)
                 .yearDisplay("公元755年").yearPrecision("exact")
-                .category("屈辱").tags(Arrays.asList("唐朝", "叛乱"))
-                .description("安禄山、史思明发动叛乱，持续八年之久，唐朝由盛转衰，此后藩镇割据局面形成。")
-                .fulltext("天宝十四载，身兼三镇节度使的安禄山以讨杨国忠为名，在范阳起兵叛乱。叛军席卷中原，攻陷洛阳长安，唐玄宗仓皇逃往四川。此乱持续八年，唐朝元气大伤。")
+                .category("屈辱")
+                .tags(Arrays.asList("唐朝", "叛乱"))
+                .description("安禄山、史思明发动叛乱，持续八年之久，唐朝由盛转衰。")
+                .fulltext("天宝十四载，安禄山在范阳起兵叛乱，叛军席卷中原。此乱持续八年，唐朝元气大伤，藩镇割据局面形成。")
                 .build(),
 
-            // 宋元明清
+            // 宋元明清新增事件
             EventEntity.builder()
-                .uid("chenqiao-bing-bian").title("陈桥兵变").year(960)
-                .yearDisplay("公元960年").yearPrecision("exact")
-                .category("朝代更迭").tags(Arrays.asList("宋朝", "赵匡胤"))
-                .description("赵匡胤在陈桥驿发动兵变，黄袍加身，建立宋朝，结束了五代十国的分裂局面。")
-                .fulltext("公元960年正月初一，后周大将赵匡胤率军北上抗辽，行至陈桥驿，部下拥立其为皇帝。赵匡胤回师开封，迫使后周恭帝禅让，建立宋朝。")
+                .uid("jing-kang").title("靖康之变").year(1127)
+                .yearDisplay("公元1127年").yearPrecision("exact")
+                .category("屈辱")
+                .tags(Arrays.asList("宋朝", "金国"))
+                .description("金军攻破汴京，俘虏徽钦二帝，北宋灭亡。")
+                .fulltext("靖康二年，金军攻破汴京，俘虏宋徽宗、宋钦宗及宗室、大臣数千人北去，北宋灭亡。康王赵构南渡建立南宋。")
                 .build(),
             EventEntity.builder()
-                .uid("bi-sheng-invent").title("毕昇发明活字印刷术").year(1040)
-                .yearDisplay("约公元1040年").yearPrecision("approx")
-                .category("文化").tags(Arrays.asList("宋朝", "科技"))
-                .description("北宋工匠毕昇发明了泥活字印刷术，大大降低了书籍生产成本，推动了文化的传播和发展。")
-                .fulltext("庆历年间，平民毕昇发明了活字印刷术。他用胶泥刻字，火烧硬化，排版时按需取字，大大提高了印刷效率。这项技术比欧洲古腾堡的活字印刷早了约四百年。")
+                .uid("yue-fei").title("岳飞抗金").year(1134)
+                .yearDisplay("约公元1134年").yearPrecision("approx")
+                .category("战争")
+                .tags(Arrays.asList("宋朝", "岳飞"))
+                .description("岳飞率岳家军英勇抗金，屡建战功，最终被秦桧以莫须有罪名杀害。")
+                .fulltext("岳飞字鹏举，南宋抗金名将。他率领岳家军多次击败金军，收复失地。但最终被秦桧以莫须有罪名杀害于风波亭，成为千古冤案。")
                 .build(),
             EventEntity.builder()
-                .uid("zheng-he-xia-hai").title("郑和下西洋").year(1405)
-                .yearDisplay("公元1405年").yearPrecision("exact")
-                .category("盛世").tags(Arrays.asList("明朝", "航海"))
-                .description("明成祖朱棣派遣郑和率领庞大船队出使西洋，前后七次远航，最远到达非洲东海岸。")
-                .fulltext("永乐三年（1405年），郑和率领二百四十多艘船、二万七千余人首航西洋。此后又六次出海，历经三十多个国家，最远到达非洲东海岸和红海沿岸，展现了明朝的强大国力。")
+                .uid("yuan-establish").title("元朝建立").year(1271)
+                .yearDisplay("公元1271年").yearPrecision("exact")
+                .category("朝代更迭")
+                .tags(Arrays.asList("元朝", "忽必烈"))
+                .description("忽必烈改国号为元，建立元朝，后灭南宋统一全国。")
+                .fulltext("至元八年，忽必烈取《易经》'大哉乾元'之意，改国号为元。至元十六年灭南宋，统一全国，建立了中国历史上版图最大的王朝。")
                 .build(),
             EventEntity.builder()
-                .uid("xu-hakeng").title("虎门销烟").year(1839)
-                .yearDisplay("公元1839年").yearPrecision("exact")
-                .category("屈辱").tags(Arrays.asList("清朝", "禁烟"))
-                .description("林则徐在广东虎门海滩当众销毁鸦片二百三十余万斤，展现了中国人民反抗鸦片的决心。")
-                .fulltext("道光十九年，林则徐奉命赴广东查禁鸦片。他在虎门海滩当众销毁收缴的鸦片二百三十七万斤，历时二十三天。这一壮举沉重打击了英国鸦片贩子，也成为鸦片战争的导火索。")
+                .uid("ming-ji-si").title("土木堡之变").year(1449)
+                .yearDisplay("公元1449年").yearPrecision("exact")
+                .category("屈辱")
+                .tags(Arrays.asList("明朝", "瓦剌"))
+                .description("明英宗亲征瓦剌被俘，明朝由盛转衰。")
+                .fulltext("正统十四年，瓦剌也先率军南下，明英宗朱祁镇在王振怂恿下亲征，在土木堡全军覆没被俘。后于谦拥立景泰帝，坚守北京。")
+                .build(),
+            EventEntity.builder()
+                .uid("opium-war").title("鸦片战争").year(1840)
+                .yearDisplay("公元1840年").yearPrecision("exact")
+                .category("屈辱")
+                .tags(Arrays.asList("清朝", "近代"))
+                .description("英国以林则徐虎门销烟为借口发动战争，中国战败签订《南京条约》，开始沦为半殖民地半封建社会。")
+                .fulltext("道光二十年，英国以禁烟为由派舰队进攻广东。清军战败，被迫签订《南京条约》，割让香港岛，开放五口通商，中国开始沦为半殖民地半封建社会。")
                 .build(),
             EventEntity.builder()
                 .uid("xin-hai-ge-ming").title("辛亥革命").year(1911)
                 .yearDisplay("公元1911年").yearPrecision("exact")
-                .category("革命").tags(Arrays.asList("清朝", "共和"))
-                .description("武昌起义爆发，各省纷纷响应，推翻了清王朝统治，结束了中国两千多年的封建帝制。")
-                .fulltext="宣统三年八月十九（1911年10月10日），武昌新军工程营打响起义枪声。短短两个月内，全国十六个省相继宣布独立，清王朝土崩瓦解。1912年1月1日，中华民国成立，孙中山就任临时大总统。"
+                .category("革命")
+                .tags(Arrays.asList("清朝", "共和"))
+                .description("武昌起义爆发，推翻了清王朝统治，结束了中国两千多年的封建帝制。")
+                .fulltext("宣统三年八月十九（1911年10月10日），武昌新军工程营开始起义枪声。短短两个月内，全国十六个省相继宣布独立，清王朝土崩瓦解。1912年1月1日，中华民国成立，孙中山就任临时大总统。")
                 .build()
         );
 
@@ -536,6 +599,95 @@ public class DataInitializer implements CommandLineRunner {
                 .tags(Arrays.asList("近代", "辛亥革命", "国父"))
                 .quote("革命尚未成功，同志仍须努力。")
                 .bio("孙中山，名文，字载之，号逸仙。中国近代民主革命的伟大先行者，中华民国和中国国民党的缔造者。他提出'三民主义'，领导辛亥革命推翻了清朝统治，结束了中国两千多年的封建帝制，建立了亚洲第一个共和国。")
+                .build(),
+
+            // 新增人物
+            PersonEntity.builder()
+                .uid("mengzi").name("孟子").courtesyName("")
+                .years(Arrays.asList(-372, -289))
+                .yearsDisplay("约前372年—约前289年")
+                .gender("male")
+                .roles(Arrays.asList("思想家", "教育家"))
+                .tags(Arrays.asList("儒家", "战国", "亚圣"))
+                .quote("民为贵，社稷次之，君为轻。")
+                .bio("孟子，名轲，邹国人。战国时期著名思想家、教育家，儒家学派代表人物，被尊为'亚圣'。继承和发展了孔子的思想，提出'性善论'和'仁政'学说。")
+                .build(),
+
+            PersonEntity.builder()
+                .uid("han-feizi").name("韩非").courtesyName("")
+                .years(Arrays.asList(-280, -233))
+                .yearsDisplay("约前280年—约前233年")
+                .gender("male")
+                .roles(Arrays.asList("思想家", "政治家"))
+                .tags(Arrays.asList("法家", "战国"))
+                .quote("法不阿贵，绳不挠曲。")
+                .bio("韩非，韩国公子。战国末期著名思想家，法家学派集大成者。他将商鞅的法、申不害术、慎到的势融为一体，著有《韩非子》。")
+                .build(),
+
+            PersonEntity.builder()
+                .uid("caocen").name("曹操").courtesyName("孟德")
+                .years(Arrays.asList(155, 220))
+                .yearsDisplay("155年—220年")
+                .gender("male")
+                .roles(Arrays.asList("政治家", "军事家", "文学家"))
+                .tags(Arrays.asList("三国", "魏国", "枭雄"))
+                .quote("老骥伏枥，志在千里。烈士暮年，壮心不已。")
+                .bio("曹操，字孟德，沛国谯县人。三国时期曹魏政权的奠基人。他统一北方，推行屯田，恢复农业生产。同时是杰出的文学家，其诗作慷慨悲壮。")
+                .build(),
+
+            PersonEntity.builder()
+                .uid("yuefei").name("岳飞").courtesyName("鹏举")
+                .years(Arrays.asList(1103, 1142))
+                .yearsDisplay("1103年—1142年")
+                .gender("male")
+                .roles(Arrays.asList("军事家", "民族英雄"))
+                .tags(Arrays.asList("宋朝", "抗金", "岳家军"))
+                .quote("莫等闲，白了少年头，空悲切。")
+                .bio("岳飞，字鹏举，相州汤阴人。南宋著名军事家、民族英雄。他率领岳家军英勇抗金，收复失地，最终被秦桧以莫须有罪名杀害于风波亭。")
+                .build(),
+
+            PersonEntity.builder()
+                .uid("wangyangming").name("王阳明").courtesyName("伯安")
+                .years(Arrays.asList(1472, 1529))
+                .yearsDisplay("1472年—1529年")
+                .gender("male")
+                .roles(Arrays.asList("思想家", "军事家", "教育家"))
+                .tags(Arrays.asList("明朝", "心学", "知行合一"))
+                .quote("知是行之始，行是知之成。")
+                .bio("王阳明，名守仁，字伯安，号阳明。明代著名思想家、军事家。他创立了心学流派，提出'知行合一'和'致良知'的思想，对东亚文化影响深远。")
+                .build(),
+
+            PersonEntity.builder()
+                .uid("qian-long").name("乾隆帝").courtesyName("弘历")
+                .years(Arrays.asList(1711, 1799))
+                .yearsDisplay("1711年—1799年")
+                .gender("male")
+                .roles(Arrays.asList("帝王", "政治家"))
+                .tags(Arrays.asList("清朝", "康乾盛世"))
+                .quote("十全老人")
+                .bio("乾隆帝，爱新觉罗·弘历，清高宗。在位六十年，是中国历史上实际掌权时间最长的皇帝。开创了'康乾盛世'的最后辉煌，编纂《四库全书》。")
+                .build(),
+
+            PersonEntity.builder()
+                .uid("ci-xi").name("慈禧太后").courtesyName("")
+                .years(Arrays.asList(1835, 1908))
+                .yearsDisplay("1835年—1908年")
+                .gender("female")
+                .roles(Arrays.asList("政治家"))
+                .tags(Arrays.asList("清朝", "晚清", "太后"))
+                .quote("朕即国家")
+                .bio("慈禧太后，叶赫那拉氏。晚清实际统治者，执政近半个世纪。她镇压太平天国、推行洋务运动，但也扼杀戊戌变法，是晚清最具争议的政治人物。")
+                .build(),
+
+            PersonEntity.builder()
+                .uid("caoe-yuan").name("曹操").courtesyName("孟德")
+                .years(Arrays.asList(155, 220))
+                .yearsDisplay("155年—220年")
+                .gender("male")
+                .roles(Arrays.asList("政治家", "军事家", "文学家"))
+                .tags(Arrays.asList("三国", "魏武帝"))
+                .quote("对酒当歌，人生几何。")
+                .bio("曹操，三国时期杰出的政治家、军事家和文学家。统一北方，推行屯田，其诗作《短歌行》《观沧海》流传千古。")
                 .build()
         );
 
@@ -552,8 +704,8 @@ public class DataInitializer implements CommandLineRunner {
                 .startYearDisplay("约公元前200年—公元15世纪")
                 .tags(Arrays.asList("科技", "发明", "文化"))
                 .description("造纸术、印刷术、火药和指南针是中国古代四大发明，对世界文明进程产生了深远影响。")
-                .fulltext="四大发明是中国古代最具代表性的科技创新成果。造纸术（西汉）和印刷术（隋唐）推动了知识的传播；火药（唐宋）改变了战争形态；指南针（战国至宋）促进了航海事业的发展。这些发明经由丝绸之路传入欧洲，为文艺复兴和地理大发现提供了重要条件。"
-                .meta="四大发明具体包括：造纸术（蔡伦改进）、印刷术（毕昇活字）、火药（炼丹术偶然发现）、指南针（司南）"
+                .fulltext("四大发明是中国古代最具代表性的科技创新成果。造纸术（西汉）和印刷术（隋唐）推动了知识的传播；火药（唐宋）改变了战争形态；指南针（战国至宋）促进了航海事业的发展。这些发明经由丝绸之路传入欧洲，为文艺复兴和地理大发现提供了重要条件。")
+                .meta("四大发明具体包括：造纸术（蔡伦改进）、印刷术（毕昇活字）、火药（炼丹术偶然发现）、指南针（司南）")
                 .build(),
 
             KnowledgeCardEntity.builder()
@@ -561,8 +713,8 @@ public class DataInitializer implements CommandLineRunner {
                 .startYearDisplay("公元前138年开通")
                 .tags(Arrays.asList("贸易", "外交", "文化"))
                 .description("丝绸之路是古代连接中国与中亚、西亚、欧洲的商贸通道，促进了东西方经济文化交流。")
-                .fulltext="张骞出使西域后，丝绸之路正式开通。这条路线从长安出发，经河西走廊、新疆，穿越中亚、波斯，最终抵达地中海沿岸。丝绸、瓷器、茶叶等中国商品沿此路西传，葡萄、胡桃、佛教等外来文化传入中原。丝绸之路不仅是商贸通道，更是文明交流的桥梁。"
-                .meta="丝绸之路分为陆上丝绸之路和海上丝绸之路两大路线"
+                .fulltext("张骞出使西域后，丝绸之路正式开通。这条路线从长安出发，经河西走廊、新疆，穿越中亚、波斯，最终抵达地中海沿岸。丝绸、瓷器、茶叶等中国商品沿此路西传，葡萄、胡桃、佛教等外来文化传入中原。丝绸之路不仅是商贸通道，更是文明交流的桥梁。")
+                .meta("丝绸之路分为陆上丝绸之路和海上丝绸之路两大路线")
                 .build(),
 
             KnowledgeCardEntity.builder()
@@ -570,8 +722,8 @@ public class DataInitializer implements CommandLineRunner {
                 .startYearDisplay("公元605年（隋炀帝）")
                 .tags(Arrays.asList("制度", "教育", "选拔"))
                 .description("科举制度是中国古代通过考试选拔官吏的制度，从隋朝创立到清朝废除，延续了一千三百多年。")
-                .fulltext="隋炀帝大业元年（605年）正式创立进士科，标志着科举制度的诞生。唐朝进一步完善，宋代增加录取名额并实行糊名誊录制度。科举考试分为童试、乡试、会试、殿试四级，考中者分别称秀才、举人、进士、状元。科举制度打破了门阀世族的垄断，使平民子弟有机会通过读书改变命运。"
-                .meta="科举制度于1905年被清政府废除，对中国社会产生了深远影响"
+                .fulltext("隋炀帝大业元年（605年）正式创立进士科，标志着科举制度的诞生。唐朝进一步完善，宋代增加录取名额并实行糊名誊录制度。科举考试分为童试、乡试、会试、殿试四级，考中者分别称秀才、举人、进士、状元。科举制度打破了门阀世族的垄断，使平民子弟有机会通过读书改变命运。")
+                .meta("科举制度于1905年被清政府废除，对中国社会产生了深远影响")
                 .build(),
 
             KnowledgeCardEntity.builder()
@@ -579,8 +731,8 @@ public class DataInitializer implements CommandLineRunner {
                 .startYearDisplay("约公元前1200年（甲骨文）")
                 .tags(Arrays.asList("文化", "文字", "艺术"))
                 .description("汉字是世界上最古老的文字之一，经历了甲骨文、金文、篆书、隶书、楷书等多个阶段的演变。")
-                .fulltext="汉字起源于约公元前1200年的甲骨文，最初是刻在龟甲兽骨上的占卜文字。随后发展为铸在青铜器上的金文（钟鼎文）。秦统一后推行小篆，汉代演变为隶书，魏晋时期楷书定型。汉字的演变历程反映了中华文明的传承与发展，至今仍在使用。"
-                .meta="汉字属于表意文字系统，是世界上唯一仍在使用的古老文字"
+                .fulltext("汉字起源于约公元前1200年的甲骨文，最初是刻在龟甲兽骨上的占卜文字。随后发展为铸在青铜器上的金文（钟鼎文）。秦统一后推行小篆，汉代演变为隶书，魏晋时期楷书定型。汉字的演变历程反映了中华文明的传承与发展，至今仍在使用。")
+                .meta("汉字属于表意文字系统，是世界上唯一仍在使用的古老文字")
                 .build(),
 
             KnowledgeCardEntity.builder()
@@ -588,8 +740,8 @@ public class DataInitializer implements CommandLineRunner {
                 .startYearDisplay("公元前770年—前221年")
                 .tags(Arrays.asList("历史时期", "思想", "变革"))
                 .description("春秋战国时期是中国历史上最重要的转型期之一，思想文化空前繁荣，出现了'百家争鸣'的局面。")
-                .fulltext="春秋时期（前770—前476年）和战国时期（前475—前221年）合称春秋战国。这一时期周王室衰微，诸侯争霸，社会剧烈变革。思想文化方面出现了'百家争鸣'：儒家、道家、法家、墨家、兵家等各派思想家纷纷涌现，奠定了中国传统文化的基础。"
-                .meta="春秋战国时期涌现了孔子、老子、墨子、孟子、庄子、韩非子等伟大思想家"
+                .fulltext("春秋时期（前770—前476年）和战国时期（前475—前221年）合称春秋战国。这一时期周王室衰微，诸侯争霸，社会剧烈变革。思想文化方面出现了'百家争鸣'：儒家、道家、法家、墨家、兵家等各派思想家纷纷涌现，奠定了中国传统文化的基础。")
+                .meta("春秋战国时期涌现了孔子、老子、墨子、孟子、庄子、韩非子等伟大思想家")
                 .build(),
 
             KnowledgeCardEntity.builder()
@@ -597,8 +749,53 @@ public class DataInitializer implements CommandLineRunner {
                 .startYearDisplay("公元前486年（最早开凿）")
                 .tags(Arrays.asList("工程", "交通", "经济"))
                 .description("京杭大运河是世界上里程最长、工程最大的古代运河，连接海河、黄河、淮河、长江、钱塘江五大水系。")
-                .fulltext="大运河的开凿始于春秋时期吴王夫差开凿邗沟。隋朝大规模扩建，以洛阳为中心，北抵涿郡（今北京），南至余杭（今杭州）。元朝裁弯取直，形成今天的京杭大运河，全长约1794公里，是世界古代最长的运河工程。大运河促进了南北经济文化交流，至今仍在使用。"
-                .meta="京杭大运河于2014年被列入世界文化遗产名录"
+                .fulltext("大运河的开凿始于春秋时期吴王夫差开凿邗沟。隋朝大规模扩建，以洛阳为中心，北抵涿郡（今北京），南至余杭（今杭州）。元朝裁弯取直，形成今天的京杭大运河，全长约1794公里。")
+                .meta("京杭大运河于2014年被列入世界文化遗产名录")
+                .build(),
+
+            KnowledgeCardEntity.builder()
+                .uid("bai-jia-zheng-ming").title("百家争鸣").startYear(-500)
+                .startYearDisplay("公元前500年—前300年")
+                .tags(Arrays.asList("思想", "文化", "哲学"))
+                .description("春秋战国时期各种思想流派纷纷涌现，形成了中国历史上第一次思想解放运动。")
+                .fulltext("春秋战国时期，社会剧烈变革，各派思想家纷纷著书立说，形成了儒家、道家、法家、墨家、兵家、名家、阴阳家等学派。他们围绕治国之道、人性善恶、天人关系等话题展开激烈辩论，奠定了中国传统文化的基础。")
+                .meta("百家争鸣持续约两百年，涌现了孔子、老子、墨子、孟子、庄子、韩非子等伟大思想家")
+                .build(),
+
+            KnowledgeCardEntity.builder()
+                .title("中国古代四大美女").startYear(-500)
+                .startYearDisplay("约公元前500年起")
+                .tags(Arrays.asList("文化", "传说", "美学"))
+                .description("西施、王昭君、貂蝉、杨玉环并称中国古代四大美女，各有'沉鱼落雁之容，闭月羞花之貌'。")
+                .fulltext("四大美女分别对应'沉鱼'（西施）、'落雁'（王昭君）、'闭月'（貂蝉）、'羞花'（杨玉环）四个典故。她们不仅以美貌著称，更在历史进程中扮演了重要角色。")
+                .meta("四大美女的典故最早见于汉代文献")
+                .build(),
+
+            KnowledgeCardEntity.builder()
+                .title("中国古代十大名将").startYear(-500)
+                .startYearDisplay("约公元前500年起")
+                .tags(Arrays.asList("军事", "历史", "人物"))
+                .description("孙武、白起、韩信、卫青、霍去病、李世民、李靖、岳飞、徐达、戚继光被公认为中国古代十大名将。")
+                .fulltext("这十位名将跨越从春秋到明朝的漫长历史，各自在不同时期创造了辉煌的军事成就。孙武著《孙子兵法》，白起一生未尝一败，韩信'背水一战'，岳飞'撼山易，撼岳家军难'。")
+                .meta("十大名将的评选参考了历代兵书和史书记载")
+                .build(),
+
+            KnowledgeCardEntity.builder()
+                .title("中国十大古琴曲").startYear(-500)
+                .startYearDisplay("约公元前500年起")
+                .tags(Arrays.asList("音乐", "文化", "艺术"))
+                .description("高山流水、广陵散、梅花三弄、夕阳箫鼓等十大古琴曲代表了中国古典音乐的巅峰。")
+                .fulltext("古琴是中国最古老的弹拨乐器之一，有着三千多年的历史。十大古琴曲中，《高山流水》讲述了伯牙子期的知音故事，《广陵散》与聂政刺韩王的传说有关，《梅花三弄》则以梅花的高洁品格为主题。")
+                .meta("古琴艺术于2003年被联合国教科文组织列为人类口头和非物质遗产代表作")
+                .build(),
+
+            KnowledgeCardEntity.builder()
+                .title("二十四节气").startYear(-100)
+                .startYearDisplay("约公元前100年定型")
+                .tags(Arrays.asList("天文", "农业", "文化"))
+                .description("二十四节气是中国古代订立的一种用来指导农事的补充历法，反映了太阳周年运动。")
+                .fulltext("二十四节气起源于黄河流域，包括立春、雨水、惊蛰、春分、清明、谷雨、立夏、小满、芒种、夏至、小暑、大暑、立秋、处暑、白露、秋分、寒露、霜降、立冬、小雪、大雪、冬至、小寒、大寒。2016年被列入联合国教科文组织人类非物质文化遗产。")
+                .meta("二十四节气完整反映了四季更替和气候变化规律")
                 .build()
         );
 

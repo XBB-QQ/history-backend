@@ -31,6 +31,9 @@ public class AdminUserEntity {
     @Column(nullable = false, length = 255)
     private String passwordHash;
 
+    @Column(nullable = false, length = 32)
+    private String salt;
+
     @Column(nullable = false, length = 20)
     @Builder.Default
     private String role = "admin";  // admin / editor
@@ -48,5 +51,6 @@ public class AdminUserEntity {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    private LocalDateTime lastLoginAt;
+    @Builder.Default
+    private LocalDateTime lastLoginAt = null;
 }
