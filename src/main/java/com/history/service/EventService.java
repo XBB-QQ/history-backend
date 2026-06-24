@@ -1,6 +1,7 @@
 package com.history.service;
 
 import com.history.dto.EventDTO;
+import com.history.dto.EventRelatedDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -24,4 +25,7 @@ public interface EventService {
 
     /** 后台管理：删除 */
     void deleteById(Long id);
+
+    /** 获取事件关联数据（人物 + 知识卡片） */
+    EventRelatedDTO getRelatedData(Long id);
 }

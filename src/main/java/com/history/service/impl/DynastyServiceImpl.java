@@ -60,6 +60,10 @@ public class DynastyServiceImpl implements DynastyService {
                 .description(entity.getDescription())
                 .fallReason(entity.getFallReason())
                 .legacy(entity.getLegacy())
+                .populationPeak(entity.getPopulationPeak())
+                .gdpEstimate(entity.getGdpEstimate())
+                .majorTradeRoutes(entity.getMajorTradeRoutes())
+                .culturalHighlights(entity.getCulturalHighlights())
                 .build();
     }
 
@@ -87,6 +91,10 @@ public class DynastyServiceImpl implements DynastyService {
         entity.setDescription(dto.getDescription());
         entity.setFallReason(dto.getFallReason());
         entity.setLegacy(dto.getLegacy());
+        entity.setPopulationPeak(dto.getPopulationPeak());
+        entity.setGdpEstimate(dto.getGdpEstimate());
+        entity.setMajorTradeRoutes(dto.getMajorTradeRoutes());
+        entity.setCulturalHighlights(dto.getCulturalHighlights());
         return toDTO(dynastyRepository.save(entity));
     }
 

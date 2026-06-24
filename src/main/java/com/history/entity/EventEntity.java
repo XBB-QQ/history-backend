@@ -78,6 +78,19 @@ public class EventEntity {
     @Column(length = 500)
     private String source;
 
+    /** 影响分析 */
+    @Column(columnDefinition = "TEXT")
+    private String impact;
+
+    /** 重要性评级 1-5 */
+    @Column
+    private Integer significance = 3;
+
+    /** 相关文章链接 */
+    @ElementCollection
+    @Builder.Default
+    private java.util.List<String> relatedArticles = new java.util.ArrayList<>();
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime crawlDate;

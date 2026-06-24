@@ -38,6 +38,13 @@ public class SecurityConfig {
                 .requestMatchers("/api/admin/auth/verify").permitAll()
                 .requestMatchers("/api/admin/**").authenticated()
                 // 用户 API（JWT 认证）
+                .requestMatchers("/api/user/quiz/daily").permitAll()
+                .requestMatchers("/api/user/quiz/random").permitAll()
+                .requestMatchers("/api/user/quiz/answer").authenticated()
+                .requestMatchers("/api/user/quiz/ranking").permitAll()
+                .requestMatchers("/api/user/learning/progress").authenticated()
+                .requestMatchers("/api/user/learning/lists").authenticated()
+                .requestMatchers("/api/user/learning/**").authenticated()
                 .requestMatchers("/api/user/**").authenticated()
                 .requestMatchers("/api/favorites/**").authenticated()
                 // 其他 API 公开

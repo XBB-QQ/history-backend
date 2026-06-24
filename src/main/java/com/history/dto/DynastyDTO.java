@@ -28,4 +28,8 @@ public class DynastyDTO {
     private String description;
     private String fallReason;
     private String legacy;
+    private String populationPeak;
+    private String gdpEstimate;
+    private String majorTradeRoutes;
+    private String culturalHighlights;
 }

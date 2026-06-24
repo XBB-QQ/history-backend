@@ -10,6 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -92,5 +95,22 @@ public class KnowledgeCardServiceImpl implements KnowledgeCardService {
         return knowledgeCardRepository.findAll().stream()
                 .map(this::toDTO)
                 .toList();
+    }
+
+    @Override
+    public List<Map<String, Object>> getTagStatistics() {
+        Map<String, Integer> tagCounts = knowledgeCardRepository.findAll().stream()
+                .flatMap(e -> e.getTags().stream())
+                .collect(Collectors.groupingBy(t -> t, Collectors.summingInt(t -> 1)));
+
+        return tagCounts.entrySet().stream()
+                .map(entry -> {
+                    Map<String, Object> map = new LinkedHashMap<>();
+                    map.put("tag", entry.getKey());
+                    map.put("count", entry.getValue());
+                    return map;
+                })
+                .sorted((a, b) -> (int) b.get("count") - (int) a.get("count"))
+                .collect(Collectors.toList());
     }
 }

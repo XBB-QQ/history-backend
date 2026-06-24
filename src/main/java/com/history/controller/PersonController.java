@@ -1,6 +1,8 @@
 package com.history.controller;
 
+import com.history.dto.PersonCompareDTO;
 import com.history.dto.PersonDTO;
+import com.history.dto.RelationshipDTO;
 import com.history.service.PersonService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -11,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 人物 API 控制器
@@ -68,5 +72,32 @@ public class PersonController {
             @RequestParam(defaultValue = "20") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(personService.search(keyword, pageable));
+    }
+
+    /**
+     * 获取人物关系链
+     */
+    @GetMapping("/{id}/relationships")
+    @Operation(summary = "获取人物关系链", description = "返回指定人物的所有关系及其关联人物信息")
+    public ResponseEntity<List<RelationshipDTO>> getRelationships(@PathVariable Long id) {
+        PersonDTO person = personService.findById(id);
+        List<RelationshipDTO> relationships = person.getRelationships();
+        if (relationships == null) {
+            relationships = List.of();
+        }
+        return ResponseEntity.ok(relationships);
+    }
+
+    /**
+     * 人物对比
+     */
+    @GetMapping("/compare")
+    @Operation(summary = "人物对比", description = "返回指定 ID 的人物信息，用于对比视图")
+    public ResponseEntity<PersonCompareDTO> compare(
+            @RequestParam Long id1,
+            @RequestParam Long id2) {
+        PersonDTO p1 = personService.findById(id1);
+        PersonDTO p2 = personService.findById(id2);
+        return ResponseEntity.ok(new PersonCompareDTO(List.of(p1, p2)));
     }
 }

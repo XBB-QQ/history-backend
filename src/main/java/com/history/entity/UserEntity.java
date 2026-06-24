@@ -50,6 +50,18 @@ public class UserEntity {
     @Column(name = "last_login_at")
     private LocalDateTime lastLoginAt;
 
+    /** 问答积分 */
+    @Column(name = "quiz_score", nullable = false)
+    private int score = 0;
+
+    /** 累计答题数 */
+    @Column(name = "quizzes_answered", nullable = false)
+    private int quizzesAnswered = 0;
+
+    /** 累计答对数 */
+    @Column(name = "quizzes_correct", nullable = false)
+    private int quizzesCorrect = 0;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -100,4 +112,13 @@ public class UserEntity {
 
     public LocalDateTime getLastLoginAt() { return lastLoginAt; }
     public void setLastLoginAt(LocalDateTime lastLoginAt) { this.lastLoginAt = lastLoginAt; }
+
+    public int getScore() { return score; }
+    public void setScore(int score) { this.score = score; }
+
+    public int getQuizzesAnswered() { return quizzesAnswered; }
+    public void setQuizzesAnswered(int quizzesAnswered) { this.quizzesAnswered = quizzesAnswered; }
+
+    public int getQuizzesCorrect() { return quizzesCorrect; }
+    public void setQuizzesCorrect(int quizzesCorrect) { this.quizzesCorrect = quizzesCorrect; }
 }

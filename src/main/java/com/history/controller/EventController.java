@@ -1,6 +1,6 @@
 package com.history.controller;
 
-import com.history.dto.EventDTO;
+import com.history.dto.*;
 import com.history.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -95,5 +95,14 @@ public class EventController {
             @RequestParam(defaultValue = "20") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(eventService.search(keyword, pageable));
+    }
+
+    /**
+     * 获取事件关联数据（人物 + 知识卡片）
+     */
+    @GetMapping("/{id}/related")
+    @Operation(summary = "获取事件关联数据")
+    public ResponseEntity<EventRelatedDTO> getRelated(@PathVariable Long id) {
+        return ResponseEntity.ok(eventService.getRelatedData(id));
     }
 }

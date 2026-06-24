@@ -11,6 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * 知识卡片 API 控制器
  */
@@ -51,5 +54,15 @@ public class KnowledgeCardController {
             @RequestParam(defaultValue = "20") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(knowledgeCardService.search(keyword, pageable));
+    }
+
+    /**
+     * 获取标签统计（用于标签云）
+     */
+    @GetMapping("/tags")
+    @Operation(summary = "获取标签统计")
+    public ResponseEntity<List<Map<String, Object>>> getTagStats() {
+        List<Map<String, Object>> stats = knowledgeCardService.getTagStatistics();
+        return ResponseEntity.ok(stats);
     }
 }

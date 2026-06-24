@@ -101,6 +101,9 @@ public class UserServiceImpl implements UserService {
         dto.setBio(user.getBio());
         dto.setCreatedAt(user.getCreatedAt());
         dto.setLastLoginAt(user.getLastLoginAt());
+        dto.setScore(user.getScore());
+        dto.setQuizzesAnswered(user.getQuizzesAnswered());
+        dto.setQuizzesCorrect(user.getQuizzesCorrect());
         return dto;
     }
 }

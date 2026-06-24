@@ -17,6 +17,10 @@ public class UserDTO {
     private LocalDateTime createdAt;
     private LocalDateTime lastLoginAt;
 
+    private int score = 0;
+    private int quizzesAnswered = 0;
+    private int quizzesCorrect = 0;
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -46,4 +50,13 @@ public class UserDTO {
 
     public LocalDateTime getLastLoginAt() { return lastLoginAt; }
     public void setLastLoginAt(LocalDateTime lastLoginAt) { this.lastLoginAt = lastLoginAt; }
+
+    public int getScore() { return score; }
+    public void setScore(int score) { this.score = score; }
+
+    public int getQuizzesAnswered() { return quizzesAnswered; }
+    public void setQuizzesAnswered(int quizzesAnswered) { this.quizzesAnswered = quizzesAnswered; }
+
+    public int getQuizzesCorrect() { return quizzesCorrect; }
+    public void setQuizzesCorrect(int quizzesCorrect) { this.quizzesCorrect = quizzesCorrect; }
 }

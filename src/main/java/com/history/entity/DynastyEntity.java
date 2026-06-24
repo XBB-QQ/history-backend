@@ -71,6 +71,22 @@ public class DynastyEntity {
     @Column(columnDefinition = "TEXT")
     private String legacy;
 
+    /** 人口峰值（如 约5200万） */
+    @Column(length = 100)
+    private String populationPeak;
+
+    /** GDP 估算 */
+    @Column(length = 100)
+    private String gdpEstimate;
+
+    /** 主要贸易路线 */
+    @Column(length = 500)
+    private String majorTradeRoutes;
+
+    /** 文化亮点 */
+    @Column(columnDefinition = "TEXT")
+    private String culturalHighlights;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 

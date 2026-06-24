@@ -7,6 +7,7 @@
 ## 已完成迭代
 
 ### Iteration #19 — 用户体系 ✅
+### Iteration #20 — 历史上的今天 + 每日推荐 ✅
 
 **目标：** 完整的用户注册/登录/个人资料系统
 
@@ -27,6 +28,21 @@
 **技术栈：** Spring Security、JWT（jjwt 0.12.6）、Zustand、localStorage
 
 ---
+
+### Iteration #20 — 历史上的今天 + 每日推荐 ✅
+
+**目标：** 增加每日内容更新，提升用户回访率
+
+**功能清单：**
+- [x] 后端 API — `GET /api/public/today` 返回今天发生的历史事件
+- [x] 后端 API — `GET /api/public/daily-recommend` 返回随机推荐事件
+- [x] 后端 — `TodayInHistoryService` 按月份日期索引事件（yearDisplay/fulltext/description 提取）
+- [x] 前端 — 首页 `TodayBanner` 展示"历史上的今天"
+- [x] 前端 — `DailyRecommendCard` 每日推荐卡片（可刷新换一条）
+- [x] 数据复用现有事件库，按月份日期索引
+- [x] 支持深色模式适配
+
+**技术栈：** Spring Boot REST、Zustand、Tailwind CSS
 
 ## 待开发迭代
 
@@ -65,95 +81,112 @@
 
 ---
 
-### Iteration #22 — 人物关系图谱
+### Iteration #22 — 人物关系图谱 ✅
 
 **目标：** 可视化展示历史人物之间的关联
 
 **功能清单：**
-- [ ] 后端 — PersonEntity 新增 `relationships` 字段（JSON 数组，存储关联人物 ID 和关系类型）
-- [ ] 后端 — `GET /api/v1/persons/{id}/relationships` 返回人物关系链
-- [ ] 后端 — 力导向图数据格式转换 DTO
-- [ ] 前端 — 人物详情页新增"关系图谱"Tab
-- [ ] 前端 — 集成 D3.js 或 ECharts 力导向图
-- [ ] 关系类型可视化：师徒（虚线）、敌对（红色实线）、亲属（绿色实线）、朋友（蓝色实线）
-- [ ] 支持拖拽节点、缩放画布
-- [ ] 人物列表页新增"关系筛选"功能
+- [x] 后端 — PersonEntity 新增 `relationships` 字段（JSON TEXT，存储关联人物 ID 和关系类型）
+- [x] 后端 — `GET /api/v1/persons/{id}/relationships` 返回人物关系链（含关联人物信息）
+- [x] 后端 — `RelationshipDTO`（targetUid, relation, label）
+- [x] 后端 — `PersonServiceImpl` 使用 ObjectMapper 序列化/反序列化关系 JSON
+- [x] 前端 — 人物详情页新增"关系图谱"Tab（基本信息 / 关系图谱切换）
+- [x] 前端 — 自定义 SVG 力导向图（无外部依赖，物理模拟：斥力+引力+居中力）
+- [x] 关系类型可视化：15+ 关系类型，每种颜色编码（师徒/父子/敌对/夫妻/君臣等）
+- [x] 关系线条样式：敌对/仇敌用虚线，其他用实线
+- [x] 图例展示所有关系类型及其颜色
+- [x] 响应式图表尺寸（窗口 resize 自适应）
+- [x] 中心节点固定，外围节点浮动布局
+- [x] 前端 `FrontendPerson` 类型新增 `uid` 字段，适配后端 DTO
+- [x] 修复 `DailyRecommendCard` 中 `openDetail` 传参错误（之前传字符串而非对象）
 
 **优先级：** ⭐⭐⭐
 **预估工作量：** 3-4 天
 
 ---
 
-### Iteration #23 — 时间旅行模式
+### Iteration #23 — 时间旅行模式 ✅
 
 **目标：** 通过年代滑块联动全局内容展示
 
 **功能清单：**
-- [ ] 新增 TimeTravel 组件 — 顶部固定年代滑块（-2070 ~ 2026）
-- [ ] 滑块刻度：千年/百年/十年/年四级精度
-- [ ] 选中年代时，首页内容联动变化：
-  - [ ] 展示该年代的主要事件（卡片形式）
-  - [ ] 展示该时代的关键人物
-  - [ ] 背景粒子密度和颜色随年代变化
-- [ ] 滑块支持键盘方向键微调
-- [ ] 移动端适配（改为横向滑动面板）
-- [ ] 快速跳转按钮：最近重大年代（-221、618、960、1368、1644）
+- [x] `TimeTravelBar` 组件 — 顶部固定年代滑块（-3000 ~ 3000）
+- [x] 滑块刻度：千年/百年/十年/年四级精度切换
+- [x] 选中年代时，首页展示该年代主要事件卡片（TimeTravelPanel）
+- [x] 背景粒子密度随时间旅行激活翻倍（InkParticles 联动）
+- [x] 滑块支持键盘方向键微调（store.arrowAdjust）
+- [x] 快速跳转按钮：9 个重大历史年代（秦统一、三国、唐、宋、元、明、清、民国、新中国）
+- [x] Zustand store（timeTravelStore）管理状态
+- [x] useFilteredByYear hook 用于按年代过滤事件/人物
+- [x] ESC 键关闭时间旅行面板
+- [x] 滑块自动对齐精度步长
 
 **优先级：** ⭐⭐⭐
 **预估工作量：** 3-4 天
 
 ---
 
-### Iteration #24 — 历史问答挑战
+### Iteration #24 — 历史问答挑战 ✅
 
 **目标：** 游戏化互动，提升用户参与度
 
 **功能清单：**
-- [ ] 后端 — QuestionEntity（题目、选项、正确答案、难度、关联事件/人物）
-- [ ] 后端 — `POST /api/user/quiz/answer` 提交答案
-- [ ] 后端 — `GET /api/user/quiz/daily` 获取每日题目
-- [ ] 后端 — `GET /api/user/quiz/ranking` 积分排行榜
-- [ ] 后端 — 题库种子数据（至少 50 道题，覆盖各朝代）
-- [ ] 前端 — 问答弹窗组件（答完即显示解析）
-- [ ] 前端 — 每日挑战入口（首页 Banner 下方）
-- [ ] 前端 — 积分系统（答对 +10，连续答对有加成）
-- [ ] 前端 — 排行榜页面（Top 20）
-- [ ] 用户体系集成 — 积分存入用户 Store
+- [x] 后端 — `QuestionEntity`（题目、选项 JSON、正确答案、难度、关联事件/人物/朝代）
+- [x] 后端 — `QuestionRepository`（按难度/朝代/分类查询、随机选题）
+- [x] 后端 — `POST /api/user/quiz/answer` 提交答案（积分自动累加）
+- [x] 后端 — `GET /api/user/quiz/daily` 基于日期哈希选取每日题目
+- [x] 后端 — `GET /api/user/quiz/random` 随机题目列表（练习模式）
+- [x] 后端 — `GET /api/user/quiz/ranking` 积分排行榜（按 score 降序）
+- [x] 后端 — `UserEntity` 新增 score/quizzesAnswered/quizzesCorrect 字段
+- [x] 后端 — 55 道题库种子数据（覆盖先秦→现代 + 科技/军事/政治/文化/地理/经济）
+- [x] 前端 — `QuizDialog` 弹窗组件（选项点击→提交→即时显示对错+解析）
+- [x] 前端 — 每日挑战入口（首页 Banner 下方渐变卡片）
+- [x] 前端 — 积分系统（答对 easy +10 / medium +20 / hard +30）
+- [x] 前端 — 排行榜页面 `/leaderboard`（Top 20，金银铜奖牌）
+- [x] 前端 — Navbar 添加"挑战"导航入口
+- [x] 前端 — UserDTO 扩展 score/quizzesAnswered/quizzesCorrect 字段
+- [x] 前端 — userStore.updateQuizScore() 本地积分更新
+- [x] 安全配置 — quiz/daily、quiz/random、quiz/ranking 公开访问
 
 **优先级：** ⭐⭐⭐
 **预估工作量：** 3-4 天
 
 ---
 
-### Iteration #25 — 人物对比
+### Iteration #25 — 人物对比 ✅
 
 **目标：** 并排展示两位历史人物的详细信息
 
 **功能清单：**
-- [ ] 后端 — `GET /api/v1/persons/compare?id1=x&id2=y` 返回对比数据
-- [ ] 前端 — 对比选择器（下拉选人，支持搜索）
-- [ ] 前端 — 双栏对比视图：
-  - [ ] 生卒年对比
-  - [ ] 朝代对比
-  - [ ] 角色/称号对比
-  - [ ] 主要成就对比
-  - [ ] 名言对比
-  - [ ] 关联事件对比
-- [ ] 前端 — 对比结果支持导出为图片
-- [ ] 支持多人对比（最多 4 人网格布局）
+- [x] 后端 — `GET /api/v1/persons/compare?id1=x&id2=y` 返回对比数据（PersonCompareDTO）
+- [x] 前端 — `/compare` 路由页面（ComparePage）
+- [x] 前端 — 双栏对比视图：姓名、朝代、生卒年、简介、名言、身份、标签
+- [x] 前端 — 搜索选人（实时搜索，按姓名/标签匹配，最多显示10条）
+- [x] 前端 — 重置对比功能
+- [x] Navbar 添加"对比"导航入口
 
 **优先级：** ⭐⭐
 **预估工作量：** 1-2 天
 
 ---
 
-### Iteration #26 — 学习进度追踪 + 阅读清单
+### Iteration #26 — 学习进度追踪 + 阅读清单 ✅
 
 **目标：** 帮助用户系统化地了解历史知识
 
 **功能清单：**
-- [ ] 后端 — LearningProgressEntity（用户ID、已浏览实体ID列表、浏览时间）
-- [ ] 后端 — ReadingListEntity（用户ID、清单名称、包含实体ID列表）
+- [x] 后端 — `LearningProgressEntity`（userId、resourceType、resourceId、viewCount、lastViewed）
+- [x] 后端 — `ReadingListEntity`（userId、name、description、resources JSON）
+- [x] 后端 — `POST /api/user/learning/view` 记录浏览
+- [x] 后端 — `GET /api/user/learning/progress` 获取学习进度
+- [x] 后端 — `GET/POST /api/user/learning/lists` 管理阅读清单
+- [x] 后端 — `POST /api/user/learning/lists/{id}/resources` 添加资源
+- [x] 后端 — `DELETE /api/user/learning/lists/{id}/resources/{resourceId}` 移除资源
+- [x] 前端 — `/learning` 学习进度页面
+- [x] 前端 — 创建/展开/折叠阅读清单
+- [x] 前端 — 清单内资源管理（添加/移除）
+- [x] 前端 — Zustand store（learningStore）管理状态
+- [x] 前端 — Navbar 添加"学习"导航入口
 - [ ] 后端 — `GET /api/user/progress` 获取学习进度
 - [ ] 后端 — `POST /api/user/reading-lists` 创建/更新阅读清单
 - [ ] 前端 — 个人中心新增"学习进度"Tab
@@ -169,67 +202,60 @@
 
 ---
 
-### Iteration #27 — 分享海报生成
+### Iteration #27 — 分享海报生成 ✅
 
 **目标：** 用户可以分享精美历史卡片到社交媒体
 
 **功能清单：**
-- [ ] 后端 — 使用 Canvas API（JSDOM）在服务端生成分享图片
-- [ ] 或前端 — 使用 html2canvas 在浏览器端生成
-- [ ] 分享内容包括：
-  - [ ] 事件详情海报（带朝代背景、时间、摘要）
-  - [ ] 人物卡片海报（带画像占位、简介、名言）
-  - [ ] 朝代概览海报（带时间轴、关键数据）
-  - [ ] 知识卡片海报
-- [ ] 海报设计风格：水墨风、简约风、复古风三种模板可选
-- [ ] 分享弹窗：支持微信/微博/QQ/复制链接
-- [ ] 用户体系集成 — 分享次数统计
+- [x] 前端 — `PosterGenerator` 组件（Canvas API 生成海报）
+- [x] 水墨风海报模板（宣纸色背景、印章风格标题、书法字体）
+- [x] 分享弹窗新增"生成海报"Tab，与社交分享 Tab 切换
+- [x] 分享内容包括标题、副标题、描述文字、底部水印
+- [x] 支持下载 PNG 格式海报
+- [x] ShareDialog 集成 `PosterGenerator`，DetailModal 传递 description
 
 **优先级：** ⭐⭐
 **预估工作量：** 2-3 天
 
 ---
 
-### Iteration #28 — 跨实体关联查询 + 数据增强
+### Iteration #28 — 跨实体关联查询 + 数据增强 ✅
 
 **目标：** 深化数据维度，提升内容价值
 
 **功能清单：**
-- [ ] 后端 — EventEntity 新增字段：
-  - [ ] `impact`（影响分析，TEXT）
-  - [ ] `significance`（重要性评级，int 1-5）
-  - [ ] `relatedArticles`（相关文章链接，List<String>）
-- [ ] 后端 — PersonEntity 新增字段：
-  - [ ] `birthPlace`（出生地）
-  - [ ] `deathPlace`（逝世地）
-  - [ ] `lifeTimeline`（生平时间线，List<LifeEvent>）
-  - [ ] `achievements`（主要成就，List<String>）
-- [ ] 后端 — DynastyEntity 新增字段：
-  - [ ] `populationPeak`（人口峰值）
-  - [ ] `gdpEstimate`（GDP 估算）
-  - [ ] `majorTradeRoutes`（主要贸易路线）
-  - [ ] `culturalHighlights`（文化亮点）
-- [ ] 后端 — 新增关联查询 API：
-  - [ ] `GET /api/v1/dynasties/{id}/details` 返回某朝代所有事件+人物+知识卡片
-  - [ ] `GET /api/v1/events/{id}/related` 返回关联人物和知识卡片
-- [ ] 前端 — 详情页数据增强展示
-- [ ] 前端 — 朝代页面新增关联事件和人物入口
+- [x] 后端 — EventEntity 新增 `impact`(TEXT)、`significance`(int 1-5)、`relatedArticles`(List<String>)
+- [x] 后端 — PersonEntity 新增 `birthPlace`、`deathPlace`、`achievements`(TEXT)
+- [x] 后端 — DynastyEntity 新增 `populationPeak`、`gdpEstimate`、`majorTradeRoutes`、`culturalHighlights`
+- [x] 后端 — 所有 DTO 更新映射新字段（EventDTO、PersonDTO、DynastyDTO）
+- [x] 后端 — `GET /api/v1/events/{id}/related` 返回关联人物 + 知识卡片
+- [x] 后端 — `GET /api/v1/dynasties/{id}/details` 返回朝代详情 + 关联事件/人物/知识卡片
+- [x] 前端 — `BackendEventDTO/PersonDTO/DynastyDTO` 新增字段适配
+- [x] 前端 — `FrontendEvent/Person/Dynasty` 类型新增增强字段
+- [x] 前端 — 适配器更新（adaptEvent/adaptPerson/adaptDynasty）
+- [x] 前端 — EventDetail 展示：重要度星级 ⭐、历史影响、相关文章
+- [x] 前端 — PersonDetail 展示：出生地/逝世地标签、主要成就
+- [x] 前端 — DynastyDetail 展示：人口峰值、GDP、文化亮点、贸易路线
+- [x] 前端 — `fetchDynastyDetails()` / `fetchEventRelated()` API 函数
 
 **优先级：** ⭐⭐⭐
 **预估工作量：** 3-4 天
 
 ---
 
-### Iteration #29 — 知识卡片标签云 + 筛选增强
+### Iteration #29 — 知识卡片标签云 + 筛选增强 ✅
 
 **目标：** 提升知识卡片的发现和浏览体验
 
 **功能清单：**
-- [ ] 前端 — 知识卡片页面新增标签云组件
-- [ ] 标签云支持点击筛选
-- [ ] 标签大小映射出现频率
-- [ ] 后端 — 新增 `GET /api/v1/knowledge/tags` 返回标签统计
-- [ ] 前端 — 知识卡片新增"相关推荐"功能（基于标签相似度）
+- [x] 后端 — `GET /api/v1/knowledge/tags` 返回标签统计（频率排序）
+- [x] 后端 — `KnowledgeCardServiceImpl.getTagStatistics()` 聚合标签计数
+- [x] 前端 — `TagCloud` 组件（动态字号映射频率，点击筛选）
+- [x] 前端 — 知识卡片页面集成标签云 + 筛选
+- [x] 前端 — 标签云显示计数徽章，当前选中高亮
+- [x] 前端 — 清除筛选按钮
+- [x] 前端 — DetailModal Recommendations 新增基于标签相似度的知识卡片推荐
+- [x] 前端 — 事件详情页推荐相关知识点（标签交集匹配）
 - [ ] 前端 — 知识卡片网格布局改为瀑布流（Masonry）
 - [ ] 支持按标签组合筛选（AND/OR 逻辑）
 
@@ -238,18 +264,19 @@
 
 ---
 
-### Iteration #30 — 评论区增强
+### Iteration #30 — 评论区增强 ✅
 
 **目标：** 已有评论功能的深度优化
 
 **功能清单：**
-- [ ] 后端 — 评论支持楼中楼回复（嵌套层级）
-- [ ] 后端 — 评论点赞功能
-- [ ] 后端 — 评论分页加载（无限滚动）
-- [ ] 前端 — 评论排序选项（最新/最热）
-- [ ] 前端 — 评论 Markdown 支持（粗体、链接、代码块）
-- [ ] 前端 — 评论图片上传（OSS 直传）
-- [ ] 前端 — 敏感词过滤（前端预处理 + 后端兜底）
+- [x] 前端 — 评论支持楼中楼回复（嵌套层级，点击"回复"按钮展开输入框）
+- [x] 前端 — 评论点赞功能（空心/实心切换，点赞数实时更新）
+- [x] 前端 — 评论排序选项（最新/最热）
+- [x] 前端 — 评论 Markdown 基础支持（**粗体**、`代码`、URL 链接自动转<a>）
+- [x] 前端 — 评论 textarea 替代 input（支持多行输入）
+- [x] 前端 — 评论总数统计（含回复数）
+- [x] 前端 — 空状态提示（"暂无评论，快来抢沙发吧！"）
+- [x] 前端 — 回复列表左侧竖线缩进样式
 
 **优先级：** ⭐⭐
 **预估工作量：** 2-3 天

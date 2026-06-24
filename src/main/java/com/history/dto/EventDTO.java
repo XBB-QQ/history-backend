@@ -28,4 +28,7 @@ public class EventDTO {
     private List<String> tags;
     private List<String> relatedEvents;
     private List<String> relatedPersons;
+    private String impact;
+    private Integer significance;
+    private List<String> relatedArticles;
 }

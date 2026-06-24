@@ -29,4 +29,9 @@ public class PersonDTO {
     private List<String> tags;
     private List<String> relatedEvents;
     private List<String> relatedPersons;
+    /** 人物关系数据 [{targetUid, relation, label}] */
+    private List<RelationshipDTO> relationships;
+    private String birthPlace;
+    private String deathPlace;
+    private String achievements;
 }

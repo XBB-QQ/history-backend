@@ -77,8 +77,24 @@ public class PersonEntity {
     @Builder.Default
     private java.util.List<String> relatedPersons = new java.util.ArrayList<>();
 
+    /** 人物关系数据（JSON 字符串）：[{targetUid, relation, label}] */
+    @Column(columnDefinition = "TEXT")
+    private String relationships;
+
     @Column(length = 500)
     private String source;
+
+    /** 出生地 */
+    @Column(length = 200)
+    private String birthPlace;
+
+    /** 逝世地 */
+    @Column(length = 200)
+    private String deathPlace;
+
+    /** 主要成就 JSON 数组 */
+    @Column(columnDefinition = "TEXT")
+    private String achievements;
 
     @CreationTimestamp
     @Column(updatable = false)

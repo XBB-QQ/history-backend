@@ -1,5 +1,8 @@
 package com.history.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.history.dto.RelationshipDTO;
 import com.history.dto.PersonDTO;
 import com.history.entity.PersonEntity;
 import com.history.repository.PersonRepository;
@@ -10,12 +13,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PersonServiceImpl implements PersonService {
 
     private final PersonRepository personRepository;
+    private final ObjectMapper objectMapper;
 
     @Override
     public Page<PersonDTO> findAll(Pageable pageable) {
@@ -57,6 +64,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     private PersonDTO toDTO(PersonEntity entity) {
+        List<RelationshipDTO> relationships = parseRelationships(entity.getRelationships());
         return PersonDTO.builder()
                 .id(entity.getId())
                 .uid(entity.getUid())
@@ -72,7 +80,20 @@ public class PersonServiceImpl implements PersonService {
                 .tags(entity.getTags())
                 .relatedEvents(entity.getRelatedEvents())
                 .relatedPersons(entity.getRelatedPersons())
+                .relationships(relationships)
+                .birthPlace(entity.getBirthPlace())
+                .deathPlace(entity.getDeathPlace())
+                .achievements(entity.getAchievements())
                 .build();
+    }
+
+    private List<RelationshipDTO> parseRelationships(String json) {
+        if (json == null || json.isBlank()) return Collections.emptyList();
+        try {
+            return objectMapper.readValue(json, new TypeReference<List<RelationshipDTO>>() {});
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
     }
 
     @Override
@@ -96,6 +117,19 @@ public class PersonServiceImpl implements PersonService {
         entity.setTags(dto.getTags() != null ? dto.getTags() : java.util.List.of());
         entity.setRelatedEvents(dto.getRelatedEvents() != null ? dto.getRelatedEvents() : java.util.List.of());
         entity.setRelatedPersons(dto.getRelatedPersons() != null ? dto.getRelatedPersons() : java.util.List.of());
+        entity.setBirthPlace(dto.getBirthPlace());
+        entity.setDeathPlace(dto.getDeathPlace());
+        entity.setAchievements(dto.getAchievements());
+        // 序列化 relationships 为 JSON
+        if (dto.getRelationships() != null && !dto.getRelationships().isEmpty()) {
+            try {
+                entity.setRelationships(objectMapper.writeValueAsString(dto.getRelationships()));
+            } catch (Exception e) {
+                entity.setRelationships(null);
+            }
+        } else {
+            entity.setRelationships(null);
+        }
         return toDTO(personRepository.save(entity));
     }
 
