@@ -44,7 +44,7 @@ public class KnowledgeCardEntity {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "`fulltext`", columnDefinition = "TEXT")
     private String fulltext;
 
     @ElementCollection

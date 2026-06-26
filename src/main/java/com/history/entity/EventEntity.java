@@ -60,7 +60,7 @@ public class EventEntity {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "`fulltext`", columnDefinition = "TEXT")
     private String fulltext;
 
     @ElementCollection
