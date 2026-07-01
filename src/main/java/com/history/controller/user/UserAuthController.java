@@ -11,14 +11,14 @@ import java.util.Map;
 
 /**
  * 用户认证控制器
- * POST /api/auth/register — 注册
- * POST /api/auth/login — 登录
- * POST /api/auth/verify — 验证 Token
- * GET  /api/auth/me — 获取当前用户信息
- * PUT  /api/auth/me — 更新用户信息
+ * POST /api/v1/auth/register — 注册
+ * POST /api/v1/auth/login — 登录
+ * POST /api/v1/auth/verify — 验证 Token
+ * GET  /api/v1/auth/me — 获取当前用户信息
+ * PUT  /api/v1/auth/me — 更新用户信息
  */
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 public class UserAuthController {
 
     private final UserService userService;
@@ -90,14 +90,14 @@ public class UserAuthController {
     /** 更新当前用户信息 */
     @PutMapping("/me")
     public ResponseEntity<?> updateMe(@RequestHeader("Authorization") String authHeader,
-                                      @RequestBody UserDTO dto) {
+                                      @RequestBody UpdateUserRequest dto) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(401).body(Map.of("error", "未登录"));
         }
         String token = authHeader.substring(7);
         String username = com.history.util.JwtUtil.extractUsername(token);
 
-        UserDTO updated = userService.updateUser(username, dto);
+        UserDTO updated = userService.updateUser(username, dto.toDTO());
         return ResponseEntity.ok(updated);
     }
 }

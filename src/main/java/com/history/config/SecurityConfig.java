@@ -29,9 +29,9 @@ public class SecurityConfig {
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(auth -> auth
                 // 公开 API
-                .requestMatchers("/api/auth/register").permitAll()
-                .requestMatchers("/api/auth/login").permitAll()
-                .requestMatchers("/api/auth/verify").permitAll()
+                .requestMatchers("/api/v1/auth/register").permitAll()
+                .requestMatchers("/api/v1/auth/login").permitAll()
+                .requestMatchers("/api/v1/auth/verify").permitAll()
                 .requestMatchers("/api/public/**").permitAll()
                 // 管理 API — 登录/验证公开，其余需认证
                 .requestMatchers("/api/admin/auth/login").permitAll()
@@ -57,10 +57,18 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*"));
+        // 生产环境应设置具体域名，如 List.of("https://yourdomain.com")
+        // 开发环境允许所有来源
+        String allowedOrigin = System.getenv("FRONTEND_ORIGIN");
+        if (allowedOrigin != null && !allowedOrigin.isBlank()) {
+            configuration.setAllowedOrigins(List.of(allowedOrigin));
+        } else {
+            configuration.setAllowedOrigins(List.of("*"));
+        }
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of("Authorization", "X-API-Key"));
+        configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

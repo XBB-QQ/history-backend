@@ -28,15 +28,14 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("用户名已被注册");
         }
 
-        // 生成盐值和密码哈希
-        String salt = SecurityUtil.generateSalt();
-        String passwordHash = SecurityUtil.sha256(request.getPassword(), salt);
+        // BCrypt 加密密码
+        String passwordHash = SecurityUtil.encodePassword(request.getPassword());
 
         // 创建用户实体
         UserEntity user = new UserEntity();
         user.setUsername(request.getUsername());
         user.setPasswordHash(passwordHash);
-        user.setSalt(salt);
+        user.setSalt("");
         user.setNickname(request.getNickname());
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
@@ -51,9 +50,16 @@ public class UserServiceImpl implements UserService {
         UserEntity user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new RuntimeException("用户名或密码错误"));
 
-        // 验证密码
-        String hash = SecurityUtil.sha256(request.getPassword(), user.getSalt());
-        if (!hash.equals(user.getPasswordHash())) {
+        // BCrypt 验证密码
+        boolean valid = SecurityUtil.verifyPassword(request.getPassword(), user.getPasswordHash());
+
+        // 兼容旧 SHA-256 + Salt 密码（迁移用）
+        if (!valid && user.getSalt() != null && !user.getSalt().isEmpty()) {
+            String hash = SecurityUtil.sha256(request.getPassword(), user.getSalt());
+            valid = hash.equals(user.getPasswordHash());
+        }
+
+        if (!valid) {
             throw new RuntimeException("用户名或密码错误");
         }
 

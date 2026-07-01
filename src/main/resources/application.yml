@@ -5,12 +5,12 @@ spring:
   application:
     name: five-millennium-museum
 
-  # --- Êý¾ÝÔ´£ºMySQL ---
+  # --- ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½MySQL ---
   datasource:
-    url: jdbc:mysql://localhost:3306/history_museum?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&characterEncoding=utf8
+    url: jdbc:mysql://${DB_HOST:localhost}:3306/history_museum?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&characterEncoding=utf8
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: root123
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root123}
 
   # --- JPA / Hibernate ---
   jpa:
@@ -22,22 +22,22 @@ spring:
       hibernate:
         format_sql: true
 
-  # --- Flyway Êý¾Ý¿âÇ¨ÒÆ£¨¹Ø±Õ£¬ÊÖ¶¯Ö´ÐÐ SQL£© ---
+  # --- Flyway ï¿½ï¿½ï¿½Ý¿ï¿½Ç¨ï¿½Æ£ï¿½ï¿½Ø±Õ£ï¿½ï¿½Ö¶ï¿½Ö´ï¿½ï¿½ SQLï¿½ï¿½ ---
   flyway:
     enabled: false
 
-  # --- ¾²Ì¬×ÊÔ´£¨Ç°¶Ë¹¹½¨²úÎï£©---
+  # --- ï¿½ï¿½Ì¬ï¿½ï¿½Ô´ï¿½ï¿½Ç°ï¿½Ë¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï£©---
   web:
     resources:
       static-locations: classpath:/static/
 
-  # --- ÎÄ¼þÉÏ´«ÏÞÖÆ ---
+  # --- ï¿½Ä¼ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ï¿½ï¿½ ---
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
 
-# --- ÈÕÖ¾ ---
+# --- ï¿½ï¿½Ö¾ ---
 logging:
   level:
     com.history: DEBUG
