@@ -11,14 +11,14 @@ import java.util.Map;
 
 /**
  * 用户认证控制器
- * POST /api/v1/auth/register — 注册
- * POST /api/v1/auth/login — 登录
- * POST /api/v1/auth/verify — 验证 Token
- * GET  /api/v1/auth/me — 获取当前用户信息
- * PUT  /api/v1/auth/me — 更新用户信息
+ * POST /api/auth/register — 注册
+ * POST /api/auth/login — 登录
+ * POST /api/auth/verify — 验证 Token
+ * GET  /api/auth/me — 获取当前用户信息
+ * PUT  /api/auth/me — 更新用户信息
  */
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/auth")
 public class UserAuthController {
 
     private final UserService userService;

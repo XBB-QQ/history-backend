@@ -20,7 +20,7 @@ import java.util.List;
  * 事件 API 控制器
  */
 @RestController
-@RequestMapping("/api/v1/events")
+@RequestMapping("/api/events")
 @RequiredArgsConstructor
 @Tag(name = "事件管理", description = "历史事件 CRUD 与搜索接口")
 public class EventController {

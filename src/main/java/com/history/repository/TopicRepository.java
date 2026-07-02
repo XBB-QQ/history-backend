@@ -25,12 +25,12 @@ public interface TopicRepository extends JpaRepository<TopicEntity, Long> {
 
     List<TopicEntity> findByCategoryAndPublishedTrueOrderBySortOrderAsc(String category);
 
-    @Query("SELECT DISTINCT t.category FROM TopicEntity WHERE published = true")
+    @Query("SELECT DISTINCT t.category FROM TopicEntity t WHERE t.published = true")
     List<String> findDistinctCategories();
 
     @Query("SELECT t FROM TopicEntity t WHERE t.published = true AND " +
-           "(LOWER(t.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-           "LOWER(t.summary) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-           "LOWER(t.description) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+           "(LOWER(CAST(t.title AS string)) LIKE CONCAT('%', LOWER(:keyword), '%') OR " +
+           "LOWER(CAST(t.summary AS string)) LIKE CONCAT('%', LOWER(:keyword), '%') OR " +
+           "LOWER(CAST(t.description AS string)) LIKE CONCAT('%', LOWER(:keyword), '%'))")
     Page<TopicEntity> search(@Param("keyword") String keyword, Pageable pageable);
 }

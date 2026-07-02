@@ -20,7 +20,7 @@ import java.util.List;
  * 朝代 API 控制器
  */
 @RestController
-@RequestMapping("/api/v1/dynasties")
+@RequestMapping("/api/dynasties")
 @RequiredArgsConstructor
 @Tag(name = "朝代管理", description = "朝代查询接口")
 public class DynastyController {

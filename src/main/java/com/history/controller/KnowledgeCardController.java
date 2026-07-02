@@ -18,7 +18,7 @@ import java.util.Map;
  * 知识卡片 API 控制器
  */
 @RestController
-@RequestMapping("/api/v1/knowledge")
+@RequestMapping("/api/knowledge")
 @RequiredArgsConstructor
 @Tag(name = "知识卡片", description = "知识卡片查询接口")
 public class KnowledgeCardController {

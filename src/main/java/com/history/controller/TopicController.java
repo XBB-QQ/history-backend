@@ -17,7 +17,7 @@ import java.util.List;
  * 专题 API 控制器
  */
 @RestController
-@RequestMapping("/api/v1/topics")
+@RequestMapping("/api/topics")
 @RequiredArgsConstructor
 @Tag(name = "专题", description = "专题深度长文接口")
 public class TopicController {

@@ -29,9 +29,9 @@ public class SecurityConfig {
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(auth -> auth
                 // 公开 API
-                .requestMatchers("/api/v1/auth/register").permitAll()
-                .requestMatchers("/api/v1/auth/login").permitAll()
-                .requestMatchers("/api/v1/auth/verify").permitAll()
+                .requestMatchers("/api/auth/register").permitAll()
+                .requestMatchers("/api/auth/login").permitAll()
+                .requestMatchers("/api/auth/verify").permitAll()
                 .requestMatchers("/api/public/**").permitAll()
                 // 管理 API — 登录/验证公开，其余需认证
                 .requestMatchers("/api/admin/auth/login").permitAll()

@@ -17,7 +17,7 @@ import java.util.Map;
  * 收藏 API 控制器（支持 JWT 认证）
  */
 @RestController
-@RequestMapping("/api/v1/favorites")
+@RequestMapping("/api/favorites")
 @RequiredArgsConstructor
 @Tag(name = "收藏管理", description = "用户收藏 CRUD 接口")
 public class FavoriteController {

@@ -5,7 +5,7 @@ spring:
   application:
     name: five-millennium-museum
 
-  # --- ����Դ��MySQL ---
+  # --- 数据源（MySQL） ---
   datasource:
     url: jdbc:mysql://${DB_HOST:localhost}:3306/history_museum?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&characterEncoding=utf8
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -22,22 +22,22 @@ spring:
       hibernate:
         format_sql: true
 
-  # --- Flyway ���ݿ�Ǩ�ƣ��رգ��ֶ�ִ�� SQL�� ---
-  flyway:
-    enabled: false
-
-  # --- ��̬��Դ��ǰ�˹������---
+  # --- 静态资源（前端构建产物） ---
   web:
     resources:
       static-locations: classpath:/static/
 
-  # --- �ļ��ϴ����� ---
+  # --- 文件上传限制 ---
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
 
-# --- ��־ ---
+  # --- Flyway 关闭（使用 Hibernate ddl-auto 管理表结构） ---
+  flyway:
+    enabled: false
+
+# --- 日志 ---
 logging:
   level:
     com.history: DEBUG

@@ -15,7 +15,7 @@ import java.util.List;
  * 历史地图 API 控制器
  */
 @RestController
-@RequestMapping("/api/v1/map")
+@RequestMapping("/api/map")
 @RequiredArgsConstructor
 @Tag(name = "历史地图", description = "朝代疆域数据接口")
 public class MapController {

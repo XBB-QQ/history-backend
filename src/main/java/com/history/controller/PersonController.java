@@ -20,7 +20,7 @@ import java.util.List;
  * 人物 API 控制器
  */
 @RestController
-@RequestMapping("/api/v1/persons")
+@RequestMapping("/api/persons")
 @RequiredArgsConstructor
 @Tag(name = "人物管理", description = "历史人物 CRUD 与搜索接口")
 public class PersonController {

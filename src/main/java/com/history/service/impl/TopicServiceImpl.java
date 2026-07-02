@@ -1,5 +1,7 @@
 package com.history.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.history.dto.TopicDTO;
 import com.history.entity.TopicEntity;
 import com.history.repository.TopicRepository;
@@ -18,6 +20,7 @@ import java.util.List;
 public class TopicServiceImpl implements TopicService {
 
     private final TopicRepository topicRepository;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public Page<TopicDTO> findAll(Pageable pageable) {
@@ -60,6 +63,24 @@ public class TopicServiceImpl implements TopicService {
                 .map(this::toDTO).toList();
     }
 
+    private List<String> parseJson(String json) {
+        if (json == null || json.isBlank()) return List.of();
+        try {
+            return objectMapper.readValue(json, new TypeReference<List<String>>() {});
+        } catch (Exception e) {
+            return List.of();
+        }
+    }
+
+    private String toJson(List<String> list) {
+        if (list == null) return "[]";
+        try {
+            return objectMapper.writeValueAsString(list);
+        } catch (Exception e) {
+            return "[]";
+        }
+    }
+
     private TopicDTO toDTO(TopicEntity entity) {
         return TopicDTO.builder()
                 .id(entity.getId())
@@ -71,11 +92,11 @@ public class TopicServiceImpl implements TopicService {
                 .description(entity.getDescription())
                 .chapterCount(entity.getChapterCount())
                 .estimatedMinutes(entity.getEstimatedMinutes())
-                .tags(entity.getTags())
-                .relatedEvents(entity.getRelatedEvents())
-                .relatedPersons(entity.getRelatedPersons())
+                .tags(parseJson(entity.getTagsJson()))
+                .relatedEvents(parseJson(entity.getRelatedEventsJson()))
+                .relatedPersons(parseJson(entity.getRelatedPersonsJson()))
                 .chapters(entity.getChapters())
-                .references(entity.getReferences())
+                .references(parseJson(entity.getReferencesJson()))
                 .sortOrder(entity.getSortOrder())
                 .published(entity.getPublished())
                 .build();
@@ -99,11 +120,11 @@ public class TopicServiceImpl implements TopicService {
         entity.setDescription(dto.getDescription());
         entity.setChapterCount(dto.getChapterCount());
         entity.setEstimatedMinutes(dto.getEstimatedMinutes());
-        entity.setTags(dto.getTags() != null ? dto.getTags() : java.util.List.of());
-        entity.setRelatedEvents(dto.getRelatedEvents() != null ? dto.getRelatedEvents() : java.util.List.of());
-        entity.setRelatedPersons(dto.getRelatedPersons() != null ? dto.getRelatedPersons() : java.util.List.of());
+        entity.setTagsJson(toJson(dto.getTags()));
+        entity.setRelatedEventsJson(toJson(dto.getRelatedEvents()));
+        entity.setRelatedPersonsJson(toJson(dto.getRelatedPersons()));
         entity.setChapters(dto.getChapters());
-        entity.setReferences(dto.getReferences() != null ? dto.getReferences() : java.util.List.of());
+        entity.setReferencesJson(toJson(dto.getReferences()));
         entity.setSortOrder(dto.getSortOrder());
         entity.setPublished(dto.getPublished());
         return toDTO(topicRepository.save(entity));
