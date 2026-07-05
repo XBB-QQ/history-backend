@@ -21,6 +21,12 @@ spring:
     resources:
       static-locations: classpath:/static/
 
+# --- LLM 代理配置 ---
+llm:
+  base-url: ${LLM_BASE_URL:https://open.bigmodel.cn/api/paas/v4}
+  api-key: ${LLM_API_KEY:52898a2aa335429697b2fc637f7d0629.uLcqtcZHj5jm1cAx}
+  model: ${LLM_MODEL:glm-4-flash}
+
 logging:
   level:
     com.history: INFO
