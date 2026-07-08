@@ -64,5 +64,7 @@ rag:
 logging:
   level:
     com.history: DEBUG
+    sql: DEBUG
   pattern:
     console: "%d{MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
