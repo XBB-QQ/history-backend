@@ -43,6 +43,23 @@ llm:
   api-key: ${LLM_API_KEY:52898a2aa335429697b2fc637f7d0629.uLcqtcZHj5jm1cAx}
   model: ${LLM_MODEL:glm-4-flash}
 
+# --- Embedding 配置 ---
+embedding:
+  provider: ${EMBEDDING_PROVIDER:zhipu}
+  base-url: ${EMBEDDING_BASE_URL:https://open.bigmodel.cn/api/paas/v4}
+  api-key: ${EMBEDDING_API_KEY:52898a2aa335429697b2fc637f7d0629.uLcqtcZHj5jm1cAx}
+  model: ${EMBEDDING_MODEL:embedding-3}
+  dimensions: ${EMBEDDING_DIMENSIONS:1024}
+
+# --- RAG 配置 ---
+rag:
+  vector-store: ${RAG_VECTOR_STORE:memory}
+  top-k: ${RAG_TOP_K:5}
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    index: ${RAG_REDIS_INDEX:history_vectors}
+
 # --- 日志 ---
 logging:
   level:
