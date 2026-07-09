@@ -33,4 +33,7 @@ public interface TopicRepository extends JpaRepository<TopicEntity, Long> {
            "LOWER(CAST(t.summary AS string)) LIKE CONCAT('%', LOWER(:keyword), '%') OR " +
            "LOWER(CAST(t.description AS string)) LIKE CONCAT('%', LOWER(:keyword), '%'))")
     Page<TopicEntity> search(@Param("keyword") String keyword, Pageable pageable);
+
+    @Query("SELECT t FROM TopicEntity t WHERE t.published = true AND LOWER(t.tagsJson) LIKE CONCAT('%', LOWER(:tag), '%') ORDER BY t.sortOrder ASC")
+    List<TopicEntity> findByTag(@Param("tag") String tag);
 }

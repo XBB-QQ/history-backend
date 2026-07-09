@@ -1,6 +1,6 @@
 -- 事件种子数据 (87 条)
 
-INSERT INTO events (uid, title, year, year_display, year_precision, category, dynasty_id, description, `fulltext`, tags, related_events, related_persons, source, crawl_date) VALUES
+INSERT IGNORE INTO events (uid, title, year, year_display, year_precision, category, dynasty_id, description, `fulltext`, tags, related_events, related_persons, source, crawl_date) VALUES
 ('yanhuang', '炎黄时代', -3000, '约公元前3000年', 'approx', '文化', NULL, '炎帝黄帝部落联盟形成华夏族雏形，仓颉造字、嫘祖养蚕，中华文明的曙光初现。', '炎帝与黄帝是中华文明的始祖。相传炎帝教民耕种，制作五弦琴；黄帝发明舟车、音律、算数，其妃嫘祖首创养蚕技术。仓颉造字传说中，天降粟米、鬼在夜哭，文字的出现标志着人类文明的开端。', '["炎帝", "黄帝", "华夏", "造字", "嫘祖"]', '[]', '[]', '', NULL),
 ('xia-establish', '夏朝建立', -2070, '约公元前2070年', 'approx', '朝代更迭', NULL, '禹继位建立中国历史上第一个王朝——夏朝，世袭制取代禅让制，开启家天下时代。', '禹因治水有功受舜禅让即位，死后传位于子启，从此世袭制取代禅让制。夏朝定都阳城（今河南登封），建立军队、制定历法（夏小正）、征收赋税，设立监狱。二里头遗址被认为是夏朝中晚期都城。大禹铸九鼎象征九州，成为后世王朝正统的象征。', '["大禹治水", "家天下", "九鼎", "禅让", "二里头"]', '["yu-flood", "shang-establish"]', '[]', '', NULL),
 ('shang-establish', '商汤灭夏 · 商朝建立', -1600, '约公元前1600年', 'approx', '朝代更迭', NULL, '商汤伐桀，建立商朝。甲骨文、青铜器成就辉煌，司母戊鼎为现存最大青铜器。', '商汤在伊尹辅佐下伐桀于鸣条，夏朝灭亡。商朝定都殷（今河南安阳），以甲骨文和青铜器闻名于世。司母戊鼎重832.84公斤，是世界现存最大的古代青铜器。商朝已有了较完备的历法和文字系统，祭祀占卜是政治生活的重要组成部分。', '["甲骨文", "青铜器", "司母戊鼎", "商汤", "伊尹", "鸣条之战"]', '["jiang-ziya"]', '[]', '', NULL),

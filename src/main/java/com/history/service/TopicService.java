@@ -17,6 +17,7 @@ public interface TopicService {
     List<String> getCategories();
     List<TopicDTO> findByCategory(String category);
     List<TopicDTO> findAllOrdered();
+    List<TopicDTO> findByTag(String tag);
 
     /** 后台管理：创建或更新 */
     TopicDTO createOrUpdate(TopicDTO dto);

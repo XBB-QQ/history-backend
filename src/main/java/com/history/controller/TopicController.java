@@ -66,4 +66,10 @@ public class TopicController {
     public ResponseEntity<List<TopicDTO>> getByCategory(@PathVariable String category) {
         return ResponseEntity.ok(topicService.findByCategory(category));
     }
+
+    @GetMapping("/tag/{tag}")
+    @Operation(summary = "按标签筛选专题")
+    public ResponseEntity<List<TopicDTO>> getByTag(@PathVariable String tag) {
+        return ResponseEntity.ok(topicService.findByTag(tag));
+    }
 }

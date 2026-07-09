@@ -1,6 +1,6 @@
 -- 人物种子数据 (50 条)
 
-INSERT INTO persons (uid, name, courtesy_name, dynasty_id, years, years_display, gender, roles, quote, bio, tags, related_events, related_persons) VALUES
+INSERT IGNORE INTO persons (uid, name, courtesy_name, dynasty_id, years, years_display, gender, roles, quote, bio, tags, related_events, related_persons) VALUES
 ('confucius', '孔子', '仲尼', NULL, '[-551, -479]', '公元前551年 — 公元前479年', 'male', '["儒家创始人", "教育家", "思想家"]', '学而时习之，不亦说乎', '孔子名丘字仲尼，儒家学派创始人。一生致力于恢复礼制，周游列国宣扬仁政思想。晚年编订诗书礼乐易春秋，被后世尊为至圣先师。其弟子整理论语，记录孔子及其弟子言行，成为儒家经典。教育上首创私学，主张有教无类因材施教。', '["仁", "义", "礼", "智", "信", "有教无类", "因材施教"]', '["spring-autumn"]', '["mencius", "laozi"]'),
 ('laozi', '老子', '伯阳', NULL, '[-600, -500]', '约公元前6世纪', 'male', '["道家创始人", "哲学家", "周守藏室之史"]', '道可道，非常道；名可名，非常名', '老子姓李名耳字伯阳，曾为周朝守藏室之史。著有道德经五千言，提出道法自然无为而治的思想。骑青牛出函谷关，留下千古名篇。其思想核心是道，认为道是宇宙万物的本源和规律。', '["道德经", "道法自然", "无为而治", "阴阳辩证"]', '["spring-autumn"]', '["confucius"]'),
 ('mencius', '孟子', '子舆', NULL, '[-372, -289]', '公元前372年 — 公元前289年', 'male', '["亚圣", "儒家", "政治家", "性善论"]', '民为贵，社稷次之，君为轻', '孟子名轲字子舆，孔子之孙伋的孙子。继承并发扬孔子思想，被称为亚圣。主张性善论，提出仁政学说，强调民本思想。游说诸侯不行仁政，晚年与弟子著书七篇，即孟子。', '["性善论", "仁政", "民本", "养浩然之气"]', '["spring-autumn"]', '["confucius"]'),

@@ -63,6 +63,11 @@ public class TopicServiceImpl implements TopicService {
                 .map(this::toDTO).toList();
     }
 
+    @Override
+    public List<TopicDTO> findByTag(String tag) {
+        return topicRepository.findByTag(tag).stream().map(this::toDTO).toList();
+    }
+
     private List<String> parseJson(String json) {
         if (json == null || json.isBlank()) return List.of();
         try {

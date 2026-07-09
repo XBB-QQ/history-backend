@@ -14,6 +14,8 @@ public class RagProperties {
     /** memory / redis */
     private String vectorStore = "memory";
     private int topK = 5;
+    /** 是否在启动时自动构建 RAG 索引（默认 true） */
+    private boolean autoIndex = true;
     private RedisConfig redis = new RedisConfig();
 
     @Data

@@ -1,6 +1,6 @@
 -- 知识卡片种子数据 (14 条)
 
-INSERT INTO knowledge_cards (uid, title, start_year, start_year_display, dynasty_id, description, `fulltext`, tags, relevant_events, relevant_persons, `meta`, source, crawl_date) VALUES
+INSERT IGNORE INTO knowledge_cards (uid, title, start_year, start_year_display, dynasty_id, description, `fulltext`, tags, relevant_events, relevant_persons, `meta`, source, crawl_date) VALUES
 ('silky-road', '丝绸之路', -138, '前138年', NULL, '张骞出使西域开辟的贸易通道，连接东西方文明，丝绸、瓷器、茶叶远销罗马。', '丝绸之路始于西汉张骞出使西域（前138年、前119年两次出使）。路线从长安出发，经河西走廊、敦煌，分南北两道穿越新疆，越过帕米尔高原通往中亚、西亚直至地中海沿岸。沿途传播丝绸、瓷器、茶叶、造纸术，也带回葡萄、胡桃、苜蓿、佛教等外来文化。是东西方文明交流的桥梁，2014年被列入世界遗产名录。', '["张骞", "长安", "河西走廊", "敦煌", "西域", "佛教", "罗马"]', '["han-establish", "ban-chao", "tang-dynasty"]', '["wu-di-da-tong", "ban-chao", "xuan-zang"]', '西汉 · 前138年', '', NULL),
 ('four-inventions', '四大发明', NULL, '跨越多个朝代', NULL, '造纸术、印刷术、火药、指南针，改变了世界文明进程的伟大发明。', '四大发明是中国对世界文明的重大贡献：1)造纸术：西汉已有纸，东汉蔡伦改进，极大推动文化传播。2)印刷术：隋唐雕版印刷，北宋毕昇发明活字印刷，比欧洲早约400年。3)火药：唐代炼丹家发现，宋代广泛应用于军事，改变战争形态。4)指南针：战国司南，宋代用于航海，为大航海时代奠定基础。马克思评价其为资产阶级发展的必要前提。', '["造纸术", "印刷术", "火药", "指南针", "蔡伦", "毕昇", "马克思"]', '["tang-dynasty", "song-dynasty"]', '["bi-sheng", "shen-kuo"]', '跨越多个朝代', '', NULL),
 ('imperial-exam', '科举制度', 587, '587年', NULL, '从隋唐到清末，延续1300年的选官制度，深刻影响东亚文化圈。', '科举制度创立于隋朝大业元年（605年），完善于唐朝，鼎盛于宋明清。通过分科考试选拔官员，打破了世族垄断仕途的局面，为平民子弟提供了上升通道。考试科目包括进士、明经、明法等，以进士科最为重要。清朝光绪三十一年（1905年）被废除，延续1300年。科举制度影响了朝鲜、越南、日本等东亚国家，被西方誉为现代公务员制度的起源。', '["进士", "明经", "状元", "殿试", "会试", "解试", "八股文"]', '["sui-unify", "tang-dynasty"]', '["tang-taizong"]', '隋 · 587年', '', NULL),
