@@ -5,10 +5,10 @@ services:
     image: mysql:8.0
     container_name: history-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: history_museum
-      MYSQL_USER: museum
-      MYSQL_PASSWORD: museum123
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_dev_only}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-history_museum}
+      MYSQL_USER: ${MYSQL_USER:-museum}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-museum_dev_only}
     ports:
       - "3306:3306"
     volumes:
