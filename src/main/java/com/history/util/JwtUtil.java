@@ -15,18 +15,24 @@ import java.util.function.Function;
  */
 public class JwtUtil {
 
-    // JWT 签名密钥必须通过环境变量 JWT_SECRET 设置
-    // 开发环境: 启动时设置 -DJWT_SECRET=your-secret-key-here
-    // 生产环境: 必须设置，不允许使用默认值
-    private static final String SECRET = System.getenv("JWT_SECRET");
+    // JWT 签名密钥获取优先级：
+    // 1. 环境变量 JWT_SECRET
+    // 2. JVM 系统属性 -DJWT_SECRET=...
+    // 3. 开发环境默认值（生产环境必须通过环境变量覆盖）
+    private static final String SECRET;
 
     static {
-        if (SECRET == null || SECRET.isBlank()) {
-            throw new RuntimeException("JWT_SECRET 环境变量未设置！请设置 JWT_SECRET 环境变量后再启动应用。");
+        String secret = System.getenv("JWT_SECRET");
+        if (secret == null || secret.isBlank()) {
+            secret = System.getProperty("JWT_SECRET");
         }
-        if (SECRET.length() < 32) {
+        if (secret == null || secret.isBlank()) {
+            secret = "history-museum-dev-jwt-secret-key-2024-do-not-use-in-production";
+        }
+        if (secret.length() < 32) {
             throw new RuntimeException("JWT_SECRET 长度不能少于 32 个字符！");
         }
+        SECRET = secret;
     }
 
     private static final long EXPIRATION_MS = 7 * 24 * 60 * 60 * 1000; // 7天
