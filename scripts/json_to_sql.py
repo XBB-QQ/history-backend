@@ -79,6 +79,36 @@ def gen_knowledge_sql(data_path):
                       ("," if i < len(cards)-1 else ";"))
     return "\n".join(lines)
 
+def gen_dynasties_sql(data_path):
+    with open(data_path, encoding='utf-8') as f:
+        dynasties = json.load(f)
+    lines = ["-- 朝代种子数据 (" + str(len(dynasties)) + " 条)"]
+    lines.append("")
+    lines.append("INSERT IGNORE INTO dynasties (uid, name, full_name, period, period_start, period_end, founder, last_ruler, capital, duration, highlights, description, fall_reason, legacy, population_peak, gdp_estimate, major_trade_routes, cultural_highlights) VALUES")
+    for i, d in enumerate(dynasties):
+        values = [
+            "'" + escape_sql(d["id"]) + "'",
+            "'" + escape_sql(d["name"]) + "'",
+            "NULL",
+            "'" + escape_sql(d.get("period", "")) + "'",
+            str(d.get("periodStart") or "NULL"),
+            str(d.get("periodEnd") or "NULL"),
+            "'" + escape_sql(d.get("founder", "")) + "'",
+            "NULL",
+            "'" + escape_sql(d.get("capital", "")) + "'",
+            "'" + escape_sql(d.get("duration", "")) + "'",
+            "'" + escape_sql(d.get("highlights", "")) + "'",
+            "'" + escape_sql(d.get("description", "")) + "'",
+            "'" + escape_sql(d.get("fallReason", "")) + "'",
+            "'" + escape_sql(d.get("legacy", "")) + "'",
+            "NULL",
+            "NULL",
+            "NULL",
+            "NULL",
+        ]
+        lines.append("  (" + ", ".join(values) + ")" + ("," if i < len(dynasties)-1 else ";"))
+    return "\n".join(lines)
+
 if __name__ == "__main__":
     data_dir = Path(__file__).parent.parent.parent / "history-museum" / "data"
     out_dir = Path(__file__).parent.parent / "src" / "main" / "resources" / "db" / "seed"
@@ -93,9 +123,14 @@ if __name__ == "__main__":
     print(gen_persons_sql(data_dir / "persons.json"))
     with open(out_dir / "V20260621_004__seed_persons.sql", "w", encoding="utf-8") as f:
         f.write(gen_persons_sql(data_dir / "persons.json"))
-    print(f"  -> {out_dir / 'V20260621_004__seed_persons.sql'}")
+    print(f"\n  -> {out_dir / 'V20260621_004__seed_persons.sql'}")
 
     print(gen_knowledge_sql(data_dir / "knowledge-cards.json"))
     with open(out_dir / "V20260621_005__seed_knowledge.sql", "w", encoding="utf-8") as f:
         f.write(gen_knowledge_sql(data_dir / "knowledge-cards.json"))
-    print(f"  -> {out_dir / 'V20260621_005__seed_knowledge.sql'}")
+    print(f"\n  -> {out_dir / 'V20260621_005__seed_knowledge.sql'}")
+
+    print(gen_dynasties_sql(data_dir / "dynasties.json"))
+    with open(out_dir / "V20260712_006__seed_dynasties.sql", "w", encoding="utf-8") as f:
+        f.write(gen_dynasties_sql(data_dir / "dynasties.json"))
+    print(f"\n  -> {out_dir / 'V20260712_006__seed_dynasties.sql'}")

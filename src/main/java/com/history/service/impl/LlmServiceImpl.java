@@ -38,13 +38,17 @@ public class LlmServiceImpl implements LlmService {
     @PostConstruct
     void validate() {
         if (props.getApiKey() == null || props.getApiKey().isBlank()) {
-            throw new IllegalStateException("LLM_API_KEY 环境变量未配置，请在启动时设置 LLM_API_KEY");
+            log.warn("LLM_API_KEY 未配置，LLM 对话功能将不可用");
+            return;
         }
         log.info("LLM 代理已就绪：baseUrl={}, model={}", props.getBaseUrl(), props.getModel());
     }
 
     @Override
     public String chat(LlmChatRequest request) {
+        if (props.getApiKey() == null || props.getApiKey().isBlank()) {
+            throw new IllegalStateException("LLM_API_KEY 未配置");
+        }
         Map<String, Object> body = buildRequestBody(request, false);
         String json = writeJson(body);
 
@@ -71,6 +75,9 @@ public class LlmServiceImpl implements LlmService {
 
     @Override
     public void chatStream(LlmChatRequest request, OutputStream outputStream) {
+        if (props.getApiKey() == null || props.getApiKey().isBlank()) {
+            throw new IllegalStateException("LLM_API_KEY 未配置");
+        }
         Map<String, Object> body = buildRequestBody(request, true);
         String json = writeJson(body);
 

@@ -44,6 +44,8 @@ public class HttpEmbeddingService implements EmbeddingService {
                 props.getProvider(), props.getModel(), props.getDimensions());
     }
 
+    private static final int MAX_BATCH_SIZE = 64;
+
     @Override
     public float[] embed(String text) {
         return embedBatch(List.of(text)).get(0);
@@ -55,6 +57,15 @@ public class HttpEmbeddingService implements EmbeddingService {
             throw new IllegalStateException("EMBEDDING_API_KEY 未配置");
         }
 
+        List<float[]> allResults = new ArrayList<>(texts.size());
+        for (int i = 0; i < texts.size(); i += MAX_BATCH_SIZE) {
+            List<String> batch = texts.subList(i, Math.min(i + MAX_BATCH_SIZE, texts.size()));
+            allResults.addAll(callEmbeddingApi(batch));
+        }
+        return allResults;
+    }
+
+    private List<float[]> callEmbeddingApi(List<String> texts) {
         Map<String, Object> body = new HashMap<>();
         body.put("model", props.getModel());
         body.put("input", texts);

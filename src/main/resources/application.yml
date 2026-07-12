@@ -22,6 +22,11 @@ spring:
       hibernate:
         format_sql: true
 
+  # --- 国际化消息编码 ---
+  messages:
+    encoding: UTF-8
+    basename: i18n/messages
+
   # --- 静态资源（前端构建产物） ---
   web:
     resources:
@@ -71,4 +76,3 @@ logging:
     sql: DEBUG
   pattern:
     console: "%d{MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-
