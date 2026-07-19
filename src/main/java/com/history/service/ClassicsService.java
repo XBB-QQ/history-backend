@@ -64,6 +64,11 @@ public class ClassicsService {
     private static final String USER_AGENT =
             "FiveMillenniumMuseum/0.1.0 (https://github.com/history-museum; contact@history.local)";
 
+    // L3 修复：parseWikitext 中重复编译的正则提为 static final，避免每次调用都 Pattern.compile
+    private static final Pattern WIKI_TEMPLATE_PATTERN = Pattern.compile("\\{\\{[^{}]*\\}\\}");
+    private static final Pattern WIKI_LINK_PATTERN = Pattern.compile("\\[\\[([^\\]|]*)\\|?([^\\]]*)\\]\\]");
+    private static final Pattern WIKI_SUBSECTION_PATTERN = Pattern.compile("\\[\\[/([^|\\]]+)\\|?([^\\]]*)\\]\\]");
+
     @PostConstruct
     void init() {
         // IPv4 强制设置已在 HistoryApplication.main 中完成
@@ -90,15 +95,19 @@ public class ClassicsService {
     }
 
     /**
-     * 通过 curl.exe 子进程发起 GET 请求
+     * 通过 curl 子进程发起 GET 请求
      * 用于绕过 Java 17 TLS 实现与某些 CDN 不兼容的问题
-     * curl.exe 使用 Windows Schannel TLS（与 PowerShell 相同），兼容性好
+     * - Windows: 使用 curl.exe（Windows 10+ 自带，Schannel TLS）
+     * - Linux/Mac: 使用 curl（OpenSSL）
      * 在单独线程读取输出，避免 pipe buffer 阻塞
      */
     private String getForStringViaCurl(String url, long start) throws Exception {
-        log.info("curl requesting url={}", url);
+        // M7 修复：跨平台支持，Windows 用 curl.exe，其他系统用 curl
+        String curlBin = System.getProperty("os.name", "").toLowerCase().contains("win")
+                ? "curl.exe" : "curl";
+        log.info("curl requesting url={} bin={}", url, curlBin);
         ProcessBuilder pb = new ProcessBuilder(
-                "curl.exe",
+                curlBin,
                 "-s",                          // 静默模式，不显示进度
                 "-S",                          // 出错时显示错误信息
                 "--max-time", "30",            // 总超时 30 秒
@@ -109,7 +118,13 @@ public class ClassicsService {
                 "-w", "\n%{http_code}",        // 在 body 末尾输出 HTTP 状态码
                 url);
         pb.redirectErrorStream(true);
-        Process process = pb.start();
+        Process process;
+        try {
+            process = pb.start();
+        } catch (java.io.IOException e) {
+            throw new RuntimeException(
+                    "无法启动 " + curlBin + "（请确保系统已安装 curl 并在 PATH 中）: " + e.getMessage(), e);
+        }
 
         // 在单独线程读取输出，避免 pipe buffer（4KB）被填满导致进程阻塞
         java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
@@ -561,11 +576,10 @@ public class ClassicsService {
         // 移除 HTML 注释
         s = s.replaceAll("<!--.*?-->", "");
         // 移除模板 {{...}}（非贪婪，多层嵌套用循环）
-        Pattern templatePattern = Pattern.compile("\\{\\{[^{}]*\\}\\}");
         int prevLen;
         do {
             prevLen = s.length();
-            Matcher m = templatePattern.matcher(s);
+            Matcher m = WIKI_TEMPLATE_PATTERN.matcher(s);
             s = m.replaceAll("");
         } while (s.length() != prevLen);
         // 移除语言变体标记 -{zh-hant:...; zh-hans:...}-（可能跨行，非贪婪）
@@ -574,8 +588,7 @@ public class ClassicsService {
         s = s.replaceAll("<[^>]+>", "");
         // 移除 <onlyinclude> 等标签内容已被上面处理
         // 处理 wiki 链接 [[目标|显示文字]] -> 显示文字
-        Pattern linkPattern = Pattern.compile("\\[\\[([^\\]|]*)\\|?([^\\]]*)\\]\\]");
-        Matcher lm = linkPattern.matcher(s);
+        Matcher lm = WIKI_LINK_PATTERN.matcher(s);
         StringBuilder sb = new StringBuilder();
         while (lm.find()) {
             String display = lm.group(2);
@@ -608,8 +621,7 @@ public class ClassicsService {
     private List<String> extractSubsections(String wikitext) {
         List<String> subs = new ArrayList<>();
         if (wikitext == null) return subs;
-        Pattern p = Pattern.compile("\\[\\[/([^|\\]]+)\\|?([^\\]]*)\\]\\]");
-        Matcher m = p.matcher(wikitext);
+        Matcher m = WIKI_SUBSECTION_PATTERN.matcher(wikitext);
         while (m.find()) {
             String display = m.group(2);
             if (display == null || display.isEmpty()) {

@@ -81,10 +81,15 @@ public class UserAuthController {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(401).body(Map.of("error", "未登录"));
         }
-        String token = authHeader.substring(7);
-        String username = com.history.util.JwtUtil.extractUsername(token);
-        UserDTO user = userService.getUserByUsername(username);
-        return ResponseEntity.ok(user);
+        // M5 修复：token 解析可能抛异常，加 try-catch 返回 401（与 /verify 一致）
+        try {
+            String token = authHeader.substring(7);
+            String username = com.history.util.JwtUtil.extractUsername(token);
+            UserDTO user = userService.getUserByUsername(username);
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body(Map.of("error", "Token 无效或已过期"));
+        }
     }
 
     /** 更新当前用户信息 */

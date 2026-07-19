@@ -39,6 +39,9 @@ public class SecurityConfig {
                 .requestMatchers("/api/admin/auth/login").permitAll()
                 .requestMatchers("/api/admin/auth/verify").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                // L1 修复：列出所有房间（调试用）泄露玩家与线索信息，限制为 ADMIN
+                // 其余 /api/game/** 接口仍公开（创建/查询/加入房间需要 roomId）
+                .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/game/rooms").hasRole("ADMIN")
                 // 用户 API（JWT 认证）
                 .requestMatchers("/api/user/quiz/daily").permitAll()
                 .requestMatchers("/api/user/quiz/random").permitAll()

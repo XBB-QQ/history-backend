@@ -29,8 +29,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // STOMP 连接端点，SockJS 兼容（前端 sockjs-client 可连接）
+        // L2 修复：从 FRONTEND_ORIGIN 环境变量读取允许的源，未配置时回退到 *（仅开发环境）
+        String allowedOrigin = System.getenv("FRONTEND_ORIGIN");
+        String[] origins = (allowedOrigin != null && !allowedOrigin.isBlank())
+                ? allowedOrigin.split("\\s*,\\s*")
+                : new String[]{"*"};
         registry.addEndpoint("/ws-game")
-                .setAllowedOriginPatterns("*")
+                .setAllowedOriginPatterns(origins)
                 .withSockJS();
     }
 }

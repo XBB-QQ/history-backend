@@ -138,27 +138,21 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new com.history.exception.ResourceNotFoundException("事件", eventId));
         EventDTO eventDTO = toDTO(entity);
 
-        // 从 relatedPersons 获取关联人物
+        // 从 relatedPersons 获取关联人物（M2 修复：用 findByUidIn 批量查询，避免 N+1）
         List<PersonDTO> relatedPersons = java.util.Collections.emptyList();
         if (entity.getRelatedPersons() != null && !entity.getRelatedPersons().isEmpty()) {
-            java.util.List<PersonDTO> list = new java.util.ArrayList<>();
-            for (String uid : entity.getRelatedPersons()) {
-                personRepository.findByUid(uid).ifPresent(p -> list.add(toPersonDTO(p)));
-            }
-            relatedPersons = list;
+            relatedPersons = personRepository.findByUidIn(entity.getRelatedPersons()).stream()
+                    .map(this::toPersonDTO)
+                    .toList();
         }
 
-        // 通过标签匹配相关的知识卡片
+        // 通过标签匹配相关的知识卡片（M2 修复：用 findDistinctByTagsIn 让 DB 过滤，避免 findAll 全表扫描）
         List<KnowledgeCardDTO> relatedKnowledge = java.util.Collections.emptyList();
         if (entity.getTags() != null && !entity.getTags().isEmpty()) {
-            java.util.List<KnowledgeCardDTO> list = new java.util.ArrayList<>();
-            for (KnowledgeCardEntity k : knowledgeCardRepository.findAll()) {
-                if (k.getTags() != null && k.getTags().stream().anyMatch(t -> entity.getTags().contains(t))) {
-                    list.add(toKnowledgeDTO(k));
-                    if (list.size() >= 5) break;
-                }
-            }
-            relatedKnowledge = list;
+            relatedKnowledge = knowledgeCardRepository.findDistinctByTagsIn(entity.getTags()).stream()
+                    .limit(5)
+                    .map(this::toKnowledgeDTO)
+                    .toList();
         }
 
         return new EventRelatedDTO(eventDTO, relatedPersons, relatedKnowledge);

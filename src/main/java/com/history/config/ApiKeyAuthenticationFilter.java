@@ -26,6 +26,7 @@ import java.util.List;
 public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
 
     private final AdminUserRepository adminUserRepository;
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ApiKeyAuthenticationFilter.class);
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -45,9 +46,11 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
                     );
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
-            } catch (Exception e) {
-                // API Key 无效则忽略，由 Spring Security 返回 403
+            } catch (IllegalArgumentException | IllegalStateException e) {
+                // API Key 格式错误或 DB 实体异常，记录但不阻塞请求
+                log.warn("API Key 认证失败: {}", e.getMessage());
             }
+            // 数据库异常（DataAccessException 等）不在此处吞掉，让其向上传播触发 GlobalExceptionHandler
         }
 
         filterChain.doFilter(request, response);

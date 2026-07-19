@@ -8,12 +8,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface PersonRepository extends JpaRepository<PersonEntity, Long> {
 
     Optional<PersonEntity> findByUid(String uid);
+
+    /** 批量按 uid 查询，避免 N+1 */
+    List<PersonEntity> findByUidIn(List<String> uids);
 
     Optional<PersonEntity> findByName(String name);
 

@@ -53,7 +53,8 @@ public class InMemoryVectorStore implements VectorStore {
             results.add(new SearchResult(entry.id(), score, entry.metadata()));
         }
         results.sort(Comparator.comparingDouble(SearchResult::score).reversed());
-        return results.subList(0, Math.min(topK, results.size()));
+        // L4 修复：subList 返回的是原列表的视图，外部修改会影响内部状态；用 new ArrayList 拷贝断开引用
+        return new ArrayList<>(results.subList(0, Math.min(topK, results.size())));
     }
 
     @Override
