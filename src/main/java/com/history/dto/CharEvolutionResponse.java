@@ -28,7 +28,9 @@ public class CharEvolutionResponse {
         private String name;
         private String era;
         private String description;
-        /** SVG path d 属性，viewBox="0 0 60 90" */
+        /** SVG path d 属性，viewBox="0 0 60 90"（内置 30 字用此字段） */
         private String svgPath;
+        /** 完整 SVG XML（hanziyuan 抓取的真实字源数据用此字段，前端优先用此渲染） */
+        private String svgXml;
     }
 }
