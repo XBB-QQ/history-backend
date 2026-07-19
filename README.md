@@ -7,10 +7,13 @@ Java 17 + Spring Boot 3.2 + JPA + MySQL + Flyway + JWT + Spring AI（RAG）+ Web
 ### 1. 启动 MySQL（Docker）
 
 ```bash
+# 安全修复 S1/S8：必须设置环境变量，否则 docker-compose up 会失败
+$env:MYSQL_ROOT_PASSWORD = "你的强密码"
+$env:JWT_SECRET = "至少32字符的JWT密钥"
 docker compose up -d
 ```
 
-容器密码通过环境变量注入，默认值仅用于本地开发，见 [docker-compose.yml](docker-compose.yml)。
+容器密码通过环境变量强制注入，不再硬编码。3306 端口只绑定 127.0.0.1，不暴露到宿主机网络。详见 [docker-compose.yml](../docker-compose.yml)。
 
 ### 2. 配置环境变量
 
@@ -28,6 +31,16 @@ copy .env.example .env
 ```bash
 mvn spring-boot:run
 ```
+
+### 生产部署安全要点（P0 修复）
+
+| 修复项 | 说明 |
+|--------|------|
+| N2 Dockerfile | 改用 `-Dspring.profiles.active=prod`，让 JwtUtil.static 块的 `System.getProperty()` 能读到 profile，避免走 dev 兜底密钥 |
+| S2 application-prod.yml | `DB_PASSWORD` 不允许默认值（缺失则启动失败）；`useSSL` 默认 true；`allowPublicKeyRetrieval=false` |
+| S3 AuthService | 管理员随机密码不再写日志，改为写入 `admin_password.txt` 文件（权限 600），Windows 降级为普通写入 |
+| docker-compose | `MYSQL_ROOT_PASSWORD` / `JWT_SECRET` 强制环境变量注入；3306 改 127.0.0.1；新增 healthcheck |
+| VITE_API_BASE_URL | 去掉多余的 `/v1`（后端所有 Controller 都是 `/api/xxx` 无 `/v1` 前缀） |
 
 启动后访问：
 - 应用：http://localhost:8080
