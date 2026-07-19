@@ -44,3 +44,6 @@ Thumbs.db
 .env.*
 !.env.example
 
+### 安全修复 S3：管理员随机密码文件 ###
+admin_password.txt
+

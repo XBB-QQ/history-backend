@@ -31,9 +31,25 @@ public class AuthService {
         if (adminUserRepository.count() == 0) {
             String password = System.getenv("ADMIN_DEFAULT_PASSWORD");
             if (password == null || password.isBlank()) {
-                // 无环境变量时生成随机密码并记录到日志
+                // 安全修复 S3：不把明文密码写到日志（日志会被收集到 ELK/Loki 等系统，长期留存）
+                // 改为只生成随机密码并写入受限文件，管理员通过文件获取
                 password = SecurityUtil.generateApiKey().substring(3); // 去掉 "hk_" 前缀
-                log.warn("未设置 ADMIN_DEFAULT_PASSWORD，已生成随机管理员密码，请记录: {}", password);
+                log.warn("未设置 ADMIN_DEFAULT_PASSWORD 环境变量，已生成随机管理员密码并写入文件 admin_password.txt（请妥善保管并删除该文件）");
+                try {
+                    java.nio.file.Files.writeString(
+                        java.nio.file.Path.of("admin_password.txt"),
+                        password,
+                        java.nio.file.attribute.PosixFilePermissions.asFileAttribute(
+                            java.nio.file.attribute.PosixFilePermissions.fromString("rw-------"))
+                    );
+                } catch (Exception e) {
+                    // Windows 不支持 PosixFilePermissions，降级为普通写入
+                    try {
+                        java.nio.file.Files.writeString(java.nio.file.Path.of("admin_password.txt"), password);
+                    } catch (Exception ex) {
+                        log.error("写入 admin_password.txt 失败，请通过 ADMIN_DEFAULT_PASSWORD 环境变量重新设置管理员密码", ex);
+                    }
+                }
             }
             String passwordHash = SecurityUtil.encodePassword(password);
             String apiKey = SecurityUtil.generateApiKey();
@@ -46,7 +62,7 @@ public class AuthService {
                 .apiKey(apiKey)
                 .build();
             adminUserRepository.save(admin);
-            log.info("初始化默认管理员账号: admin (密码已通过环境变量或日志获取)");
+            log.info("初始化默认管理员账号: admin (密码通过 ADMIN_DEFAULT_PASSWORD 环境变量或 admin_password.txt 文件获取)");
         }
     }
 
