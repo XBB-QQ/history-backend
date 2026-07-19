@@ -18,7 +18,7 @@ public class JwtUtil {
     // JWT 签名密钥获取优先级：
     // 1. 环境变量 JWT_SECRET
     // 2. JVM 系统属性 -DJWT_SECRET=...
-    // 3. 开发环境默认值（生产环境必须通过环境变量覆盖）
+    // 3. 开发环境默认值（仅 dev profile 启用，prod 缺失则抛异常终止启动）
     private static final String SECRET;
 
     static {
@@ -27,6 +27,13 @@ public class JwtUtil {
             secret = System.getProperty("JWT_SECRET");
         }
         if (secret == null || secret.isBlank()) {
+            // 检测当前 profile：prod 必须显式配置 JWT_SECRET，否则终止启动
+            String profile = System.getProperty("spring.profiles.active", "");
+            if ("prod".equalsIgnoreCase(profile)) {
+                throw new IllegalStateException(
+                    "生产环境必须通过 JWT_SECRET 环境变量配置 JWT 签名密钥（不少于 32 字符）");
+            }
+            // dev/test 兜底（仅本地开发，不可用于生产）
             secret = "history-museum-dev-jwt-secret-key-2024-do-not-use-in-production";
         }
         if (secret.length() < 32) {

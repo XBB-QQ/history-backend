@@ -33,10 +33,12 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/login").permitAll()
                 .requestMatchers("/api/auth/verify").permitAll()
                 .requestMatchers("/api/public/**").permitAll()
-                // 管理 API — 登录/验证公开，其余需认证
+                // 管理 API — 登录/验证公开，其余需 ADMIN 角色
+                // 安全修复：原 .authenticated() 仅校验"已登录"，普通用户也能调 admin 接口
+                // 现改为 hasRole('ADMIN')，ApiKeyAuthenticationFilter 已正确设置 ROLE_ADMIN
                 .requestMatchers("/api/admin/auth/login").permitAll()
                 .requestMatchers("/api/admin/auth/verify").permitAll()
-                .requestMatchers("/api/admin/**").authenticated()
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 // 用户 API（JWT 认证）
                 .requestMatchers("/api/user/quiz/daily").permitAll()
                 .requestMatchers("/api/user/quiz/random").permitAll()

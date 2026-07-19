@@ -157,7 +157,8 @@ src/main/java/com/history/
 
 ## 默认账号
 
-- 管理员：`admin` / `admin123`（生产环境务必修改，见 [NOTES.md](NOTES.md)）
+- 管理员账号由 `DataInitializer` 初始化，**默认密码请勿写入公开文档**。
+- 生产环境部署后请立即通过管理后台修改密码，详见 [NOTES.md](NOTES.md)。
 
 ## 部署
 
