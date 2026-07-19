@@ -18,6 +18,12 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+    private final JwtHandshakeInterceptor jwtHandshakeInterceptor;
+
+    public WebSocketConfig(JwtHandshakeInterceptor jwtHandshakeInterceptor) {
+        this.jwtHandshakeInterceptor = jwtHandshakeInterceptor;
+    }
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         // 服务端广播通道：订阅 /topic/game/** 即可收到房间消息
@@ -34,7 +40,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         String[] origins = (allowedOrigin != null && !allowedOrigin.isBlank())
                 ? allowedOrigin.split("\\s*,\\s*")
                 : new String[]{"*"};
+        // 安全修复 S6：握手期校验 JWT，未登录或 token 无效拒绝连接
         registry.addEndpoint("/ws-game")
+                .addInterceptors(jwtHandshakeInterceptor)
                 .setAllowedOriginPatterns(origins)
                 .withSockJS();
     }

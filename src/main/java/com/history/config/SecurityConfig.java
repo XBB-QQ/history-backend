@@ -52,7 +52,12 @@ public class SecurityConfig {
                 .requestMatchers("/api/user/learning/**").authenticated()
                 .requestMatchers("/api/user/**").authenticated()
                 .requestMatchers("/api/favorites/**").authenticated()
-                // 其他 API 公开
+                // 安全修复 S4：消耗 LLM 配额或敏感操作的端点需登录，防匿名滥用刷配额
+                .requestMatchers("/api/llm/**").authenticated()
+                .requestMatchers("/api/v1/rag/**").authenticated()
+                .requestMatchers("/api/classics/translate").authenticated()
+                .requestMatchers("/api/game/**").authenticated()
+                // 其他 API 公开（events/persons/dynasties/knowledge/topics/map/classics/char-evolution 等查询类）
                 .requestMatchers("/api/**").permitAll()
                 .anyRequest().permitAll()
             );
@@ -62,17 +67,20 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // 生产环境应设置具体域名，如 List.of("https://yourdomain.com")
-        // 开发环境允许所有来源
+        // 安全修复 S5：统一 CORS 配置（删除 WebConfig 中的重复 CorsFilter）
+        // 使用 allowedOriginPatterns 而非 allowedOrigins，以兼容 allowCredentials=true + 通配符
+        configuration.setAllowCredentials(true);
         String allowedOrigin = System.getenv("FRONTEND_ORIGIN");
         if (allowedOrigin != null && !allowedOrigin.isBlank()) {
-            configuration.setAllowedOrigins(List.of(allowedOrigin));
+            // 生产环境：FRONTEND_ORIGIN 支持逗号分隔的多域名
+            configuration.setAllowedOriginPatterns(java.util.Arrays.asList(allowedOrigin.split("\\s*,\\s*")));
         } else {
-            configuration.setAllowedOrigins(List.of("*"));
+            // 开发环境兜底：允许 localhost 任意端口 + https 任意域名
+            configuration.setAllowedOriginPatterns(List.of("http://localhost:*", "http://127.0.0.1:*"));
         }
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setExposedHeaders(List.of("Authorization", "X-API-Key"));
+        configuration.setExposedHeaders(List.of("Authorization", "X-API-Key", "X-Total-Count"));
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

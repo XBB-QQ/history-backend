@@ -43,6 +43,10 @@ mvn spring-boot:run
 | VITE_API_BASE_URL | 去掉多余的 `/v1`（后端所有 Controller 都是 `/api/xxx` 无 `/v1` 前缀） |
 | B1 QuestionPublicDTO 拆分 | 出题端点（`/api/user/quiz/daily`、`/api/user/quiz/random`）改返回 [`QuestionPublicDTO`](src/main/java/com/history/dto/QuestionPublicDTO.java)（不含 `correctIndex` / `explanation`），答题后通过 `QuizResult.question` 返回完整答案和解析，防前端泄题 |
 | B2 X-User-Id 改 SecurityContext | [`QuizController`](src/main/java/com/history/controller/QuizController.java) 和 [`LearningController`](src/main/java/com/history/controller/LearningController.java) 共 7 处 `@RequestHeader("X-User-Id")` 改用 `SecurityContextHolder.getContext().getAuthentication().getName()` 从 JWT 取 username，消除 IDOR 风险 |
+| S4 LLM/RAG/Game/translate 端点 authenticated | [`SecurityConfig`](src/main/java/com/history/config/SecurityConfig.java) `/api/**` permitAll 之前加 4 条 authenticated 规则：`/api/llm/**`、`/api/v1/rag/**`、`/api/classics/translate`、`/api/game/**`，防匿名滥用刷 LLM 配额 |
+| S5 删除 WebConfig CORS 重复配置 | 删除 [`WebConfig.java`](src/main/java/com/history/config/WebConfig.java)（唯一职责是重复的 CorsFilter），统一到 [`SecurityConfig.corsConfigurationSource`](src/main/java/com/history/config/SecurityConfig.java)，改用 `setAllowedOriginPatterns` + `setAllowCredentials(true)`，支持 `FRONTEND_ORIGIN` 多域名逗号分隔 |
+| S6 WebSocket 握手期 JWT 校验 | 新建 [`JwtHandshakeInterceptor`](src/main/java/com/history/config/JwtHandshakeInterceptor.java)，`/ws-game` 端点握手期从 query string `?token=xxx` 取 JWT 校验（SockJS 不支持自定义 header），失败返回 401；[`WebSocketConfig`](src/main/java/com/history/config/WebSocketConfig.java) 注册 interceptor |
+| S7 RateLimitConfig cacheKey 加 clientIp + 上限 | [`RateLimitConfig`](src/main/java/com/history/config/RateLimitConfig.java) cacheKey 改为 `clientIp + ":" + path + ":" + rate`，每个客户端 IP 独立配额（原 key 仅 path+rate，单用户能耗光全局配额）；`ConcurrentHashMap` 改用 `Guava Cache`（maximumSize=10000 + expireAfterAccess=1h），防长期运行 OOM |
 
 启动后访问：
 - 应用：http://localhost:8080
