@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "rag")
 public class RagProperties {
-    /** memory / redis */
-    private String vectorStore = "memory";
+    /** memory / mysql / redis */
+    private String vectorStore = "mysql";
     private int topK = 5;
     /** 是否在启动时自动构建 RAG 索引（默认 true） */
     private boolean autoIndex = true;

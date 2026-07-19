@@ -12,7 +12,7 @@ history-backend/docs/
 ├── README.md     # 本文档
 ├── API.md        # 接口契约（前端依据此对接）
 ├── SETUP.md      # 本地开发环境搭建 + 数据库初始化
-└── DEPLOY.md     # 部署文档（待补）
+└── DEPLOY.md     # 部署文档（已完成 2026-07-18）
 ```
 
 ---

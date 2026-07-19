@@ -61,13 +61,32 @@ embedding:
 
 # --- RAG 配置 ---
 rag:
-  vector-store: ${RAG_VECTOR_STORE:memory}
+  vector-store: ${RAG_VECTOR_STORE:mysql}
   top-k: ${RAG_TOP_K:5}
   auto-index: ${RAG_AUTO_INDEX:true}
   redis:
     host: ${REDIS_HOST:localhost}
     port: ${REDIS_PORT:6379}
     index: ${RAG_REDIS_INDEX:history_vectors}
+
+# --- ctext.org 典籍 API 配置 ---
+# 申请地址：https://ctext.org/account.pl
+# 未配置 api-key 时仅能访问 searchtexts / readlink / getstatus 等公开端点
+ctext:
+  base-url: ${CTEXT_BASE_URL:https://api.ctext.org}
+  api-key: ${CTEXT_API_KEY:}
+  timeout-ms: ${CTEXT_TIMEOUT_MS:8000}
+  cache-ttl-ms: ${CTEXT_CACHE_TTL_MS:86400000}
+
+# --- Wikisource 典籍 API 配置 ---
+# 端点：https://zh.wikisource.org/w/api.php
+# 无需 API key，支持 CORS，国内访问稳定
+# 作为 ctext.org 的替代源，双源策略：ctext（权威） + Wikisource（快速）
+wikisource:
+  base-url: ${WIKISOURCE_BASE_URL:https://zh.wikisource.org/w/api.php}
+  timeout-ms: ${WIKISOURCE_TIMEOUT_MS:8000}
+  cache-ttl-ms: ${WIKISOURCE_CACHE_TTL_MS:86400000}
+  search-limit: ${WIKISOURCE_SEARCH_LIMIT:20}
 
 # --- 日志 ---
 logging:

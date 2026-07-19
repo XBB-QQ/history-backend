@@ -16,12 +16,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 内存版向量存储 — 用 ConcurrentHashMap + 余弦相似度
- * 适用于开发/测试环境，生产环境应切换到 Redis Stack 实现
+ * 适用于开发/测试环境；生产环境建议用 mysql（见 MysqlVectorStore）或 redis
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@ConditionalOnProperty(name = "rag.vector-store", havingValue = "memory", matchIfMissing = true)
+@ConditionalOnProperty(name = "rag.vector-store", havingValue = "memory")
 public class InMemoryVectorStore implements VectorStore {
 
     private final RagProperties props;
