@@ -55,6 +55,7 @@ mvn spring-boot:run
 | 典籍（ctext） | `/api/classics` | ctext.org 代理：搜索 / 全文 / 状态 / 反查 URN |
 | 典籍（Wikisource） | `/api/classics/wikisource` | Wikisource 代理：搜索 / 全文（curl.exe 转发，绕过 Java 17 TLS bug） |
 | 典籍（AI 翻译） | `/api/classics/translate` | GLM-4-Flash 古文翻译白话文（800 字分段 + 1 次重试 + 24h 缓存） |
+| 汉字演变 | `/api/char-evolution` | 汉字字形演变（内置 30 字 + hanziyuan.net 实时抓取任意字，24h 缓存） |
 
 ### 用户接口（JWT 认证）
 
