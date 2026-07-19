@@ -631,8 +631,8 @@ public class ClassicsService {
     // AI 古文翻译（GLM-4-Flash）
     // ──────────────────────────────────────────────
 
-    /** 翻译缓存 key 前缀 */
-    private static final String TRANSLATE_CACHE_PREFIX = "translate:";
+    /** 翻译缓存 key 前缀（v2: prompt 注入前文上下文，与 v1 不兼容，旧缓存自动失效） */
+    private static final String TRANSLATE_CACHE_PREFIX = "translate:v2:";
 
     /** 单段翻译最大字符数（GLM-4-Flash 免费模型对长文本不稳定，800 字以内稳定） */
     private static final int TRANSLATE_CHUNK_SIZE = 800;
@@ -690,6 +690,9 @@ public class ClassicsService {
         StringBuilder fullResult = new StringBuilder();
         int successCount = 0;
         int failCount = 0;
+        // 上下文连贯：保存前一段的原文和译文末尾，注入下一段 prompt 保持术语一致
+        String prevOriginal = null;
+        String prevTranslation = null;
 
         for (int i = 0; i < chunks.size(); i++) {
             // M1: 检查线程中断（emitter timeout/error 时 Controller 会 interrupt worker）
@@ -701,11 +704,16 @@ public class ClassicsService {
 
             String chunk = chunks.get(i);
             // L1: 用 ChunkTranslation.success 判断失败，不依赖字符串前缀
-            ChunkTranslation result = translateChunk(chunk, title, i + 1, total);
+            // 上下文连贯：传入前一段原文/译文末尾，让 LLM 保持人名地名一致
+            ChunkTranslation result = translateChunk(chunk, title, i + 1, total, prevOriginal, prevTranslation);
             if (result.success()) {
                 successCount++;
+                // 更新前文上下文（只保留末尾 200 字，控制 token 消耗）
+                prevOriginal = truncateEnd(chunk, 200);
+                prevTranslation = truncateEnd(result.translation(), 200);
             } else {
                 failCount++;
+                // 翻译失败时不更新上下文，避免错误文案污染下一段
             }
             if (i > 0) fullResult.append("\n\n");
             fullResult.append(result.translation());
@@ -787,19 +795,39 @@ public class ClassicsService {
     /**
      * 翻译单段古文，带重试机制
      * L1: 返回 ChunkTranslation（含 success 标志），调用方用 .success() 判断失败
+     * 上下文连贯：传入前一段原文/译文末尾，让 LLM 保持人名地名等术语一致
+     *
+     * @param chunk            当前段原文
+     * @param title            典籍标题
+     * @param chunkIdx         当前段序号（1-based）
+     * @param totalChunks      总段数
+     * @param prevOriginal     前一段原文末尾（可为 null，首段为 null）
+     * @param prevTranslation  前一段译文末尾（可为 null，首段为 null）
      */
-    private ChunkTranslation translateChunk(String chunk, String title, int chunkIdx, int totalChunks) {
+    private ChunkTranslation translateChunk(String chunk, String title, int chunkIdx, int totalChunks,
+                                            String prevOriginal, String prevTranslation) {
         String systemPrompt = "你是古文翻译专家，精通先秦至明清各类古籍。"
                 + "请将给定的古文翻译为现代白话文，要求：\n"
                 + "1. 忠于原文，不增删内容\n"
                 + "2. 用流畅的现代汉语表达\n"
                 + "3. 保留原文的段落结构\n"
                 + "4. 只输出译文，不要解释或注释\n"
-                + "5. 人名、地名、官职名等专有名词保留原词";
+                + "5. 人名、地名、官职名等专有名词保留原词\n"
+                + "6. 全文术语保持一致（参考前文译文，同一人名/地名用相同译法）";
 
         String chunkHint = totalChunks > 1 ? "（第 " + chunkIdx + "/" + totalChunks + " 段）\n\n" : "";
+        // 上下文连贯：从第二段起注入前文末尾，让 LLM 知道前文用了什么术语
+        String contextHint = "";
+        if (prevOriginal != null && !prevOriginal.isBlank()
+                && prevTranslation != null && !prevTranslation.isBlank()) {
+            contextHint = "【前文参考（请保持术语一致）】\n"
+                    + "前文原文末尾：\n" + prevOriginal + "\n\n"
+                    + "前文译文末尾：\n" + prevTranslation + "\n\n"
+                    + "【请翻译以下古文】\n\n";
+        }
         String userPrompt = (title != null && !title.isBlank() ? "典籍：" + title + "\n\n" : "")
-                + "请翻译以下古文：\n\n" + chunkHint + chunk;
+                + contextHint
+                + (contextHint.isEmpty() ? "请翻译以下古文：\n\n" + chunkHint + chunk : chunkHint + chunk);
 
         LlmChatRequest chatRequest = LlmChatRequest.builder()
                 .messages(List.of(
@@ -873,6 +901,15 @@ public class ClassicsService {
             log.warn("SHA-256 unavailable, fallback to hashCode");
             return Integer.toString(input.hashCode());
         }
+    }
+
+    /**
+     * 上下文连贯：截取字符串末尾 maxLen 字符，用于注入下一段 prompt
+     * 保留末尾而非开头，因为末尾与当前段衔接最紧密
+     */
+    private String truncateEnd(String s, int maxLen) {
+        if (s == null || s.length() <= maxLen) return s;
+        return s.substring(s.length() - maxLen);
     }
 
     @SuppressWarnings("unchecked")
