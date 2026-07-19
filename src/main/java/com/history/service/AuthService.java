@@ -36,19 +36,21 @@ public class AuthService {
                 password = SecurityUtil.generateApiKey().substring(3); // 去掉 "hk_" 前缀
                 log.warn("未设置 ADMIN_DEFAULT_PASSWORD 环境变量，已生成随机管理员密码并写入文件 admin_password.txt（请妥善保管并删除该文件）");
                 try {
-                    java.nio.file.Files.writeString(
-                        java.nio.file.Path.of("admin_password.txt"),
-                        password,
-                        java.nio.file.attribute.PosixFilePermissions.asFileAttribute(
-                            java.nio.file.attribute.PosixFilePermissions.fromString("rw-------"))
-                    );
-                } catch (Exception e) {
-                    // Windows 不支持 PosixFilePermissions，降级为普通写入
+                    java.nio.file.Path path = java.nio.file.Path.of("admin_password.txt");
+                    // 先写入文件（writeString 不接受 FileAttribute 参数，必须先写后设权限）
+                    java.nio.file.Files.writeString(path, password);
+                    // POSIX 系统设置权限 600（Windows 不支持，自动跳过；权限设置失败不影响密码可用）
                     try {
-                        java.nio.file.Files.writeString(java.nio.file.Path.of("admin_password.txt"), password);
+                        if (java.nio.file.FileSystems.getDefault()
+                                .supportedFileAttributeViews().contains("posix")) {
+                            java.nio.file.Files.setPosixFilePermissions(path,
+                                java.nio.file.attribute.PosixFilePermissions.fromString("rw-------"));
+                        }
                     } catch (Exception ex) {
-                        log.error("写入 admin_password.txt 失败，请通过 ADMIN_DEFAULT_PASSWORD 环境变量重新设置管理员密码", ex);
+                        log.debug("设置 admin_password.txt 文件权限失败（不影响密码生成）", ex);
                     }
+                } catch (Exception e) {
+                    log.error("写入 admin_password.txt 失败，请通过 ADMIN_DEFAULT_PASSWORD 环境变量重新设置管理员密码", e);
                 }
             }
             String passwordHash = SecurityUtil.encodePassword(password);
