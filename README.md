@@ -41,6 +41,8 @@ mvn spring-boot:run
 | S3 AuthService | 管理员随机密码不再写日志，改为写入 `admin_password.txt` 文件（权限 600），Windows 降级为普通写入 |
 | docker-compose | `MYSQL_ROOT_PASSWORD` / `JWT_SECRET` 强制环境变量注入；3306 改 127.0.0.1；新增 healthcheck |
 | VITE_API_BASE_URL | 去掉多余的 `/v1`（后端所有 Controller 都是 `/api/xxx` 无 `/v1` 前缀） |
+| B1 QuestionPublicDTO 拆分 | 出题端点（`/api/user/quiz/daily`、`/api/user/quiz/random`）改返回 [`QuestionPublicDTO`](src/main/java/com/history/dto/QuestionPublicDTO.java)（不含 `correctIndex` / `explanation`），答题后通过 `QuizResult.question` 返回完整答案和解析，防前端泄题 |
+| B2 X-User-Id 改 SecurityContext | [`QuizController`](src/main/java/com/history/controller/QuizController.java) 和 [`LearningController`](src/main/java/com/history/controller/LearningController.java) 共 7 处 `@RequestHeader("X-User-Id")` 改用 `SecurityContextHolder.getContext().getAuthentication().getName()` 从 JWT 取 username，消除 IDOR 风险 |
 
 启动后访问：
 - 应用：http://localhost:8080

@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,11 +25,19 @@ public class LearningController {
 
     private final LearningService learningService;
 
+    /** 安全修复 B2：从 SecurityContext 取当前登录用户名（JWT 解析后已设置） */
+    private String getCurrentUsername() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || auth.getPrincipal() == null) {
+            return null;
+        }
+        return auth.getName();
+    }
+
     @PostMapping("/view")
     @Operation(summary = "记录浏览")
-    public ResponseEntity<Void> recordView(
-            @RequestBody Map<String, Object> body,
-            @RequestHeader(value = "X-User-Id", required = false) String userId) {
+    public ResponseEntity<Void> recordView(@RequestBody Map<String, Object> body) {
+        String userId = getCurrentUsername();
         if (userId == null) return ResponseEntity.status(401).build();
         String type = (String) body.get("resourceType");
         Long id = Long.valueOf(body.get("resourceId").toString());
@@ -37,25 +47,24 @@ public class LearningController {
 
     @GetMapping("/progress")
     @Operation(summary = "获取学习进度")
-    public ResponseEntity<List<LearningProgressDTO>> getProgress(
-            @RequestHeader(value = "X-User-Id", required = false) String userId) {
+    public ResponseEntity<List<LearningProgressDTO>> getProgress() {
+        String userId = getCurrentUsername();
         if (userId == null) return ResponseEntity.status(401).build();
         return ResponseEntity.ok(learningService.getProgress(userId));
     }
 
     @GetMapping("/lists")
     @Operation(summary = "获取阅读清单列表")
-    public ResponseEntity<List<ReadingListDTO>> getLists(
-            @RequestHeader(value = "X-User-Id", required = false) String userId) {
+    public ResponseEntity<List<ReadingListDTO>> getLists() {
+        String userId = getCurrentUsername();
         if (userId == null) return ResponseEntity.status(401).build();
         return ResponseEntity.ok(learningService.getLists(userId));
     }
 
     @PostMapping("/lists")
     @Operation(summary = "创建阅读清单")
-    public ResponseEntity<ReadingListDTO> createList(
-            @RequestBody Map<String, String> body,
-            @RequestHeader(value = "X-User-Id", required = false) String userId) {
+    public ResponseEntity<ReadingListDTO> createList(@RequestBody Map<String, String> body) {
+        String userId = getCurrentUsername();
         if (userId == null) return ResponseEntity.status(401).build();
         ReadingListDTO dto = learningService.createList(userId, body.get("name"), body.get("description"));
         return ResponseEntity.ok(dto);
@@ -65,8 +74,8 @@ public class LearningController {
     @Operation(summary = "向清单添加资源")
     public ResponseEntity<ReadingListDTO> addResource(
             @PathVariable Long id,
-            @RequestBody Map<String, Object> body,
-            @RequestHeader(value = "X-User-Id", required = false) String userId) {
+            @RequestBody Map<String, Object> body) {
+        String userId = getCurrentUsername();
         if (userId == null) return ResponseEntity.status(401).build();
         ReadingListDTO dto = learningService.addResource(
             userId, id,
@@ -81,8 +90,8 @@ public class LearningController {
     @Operation(summary = "从清单移除资源")
     public ResponseEntity<Void> removeResource(
             @PathVariable Long id,
-            @PathVariable Long resourceId,
-            @RequestHeader(value = "X-User-Id", required = false) String userId) {
+            @PathVariable Long resourceId) {
+        String userId = getCurrentUsername();
         if (userId == null) return ResponseEntity.status(401).build();
         learningService.removeResource(userId, id, resourceId);
         return ResponseEntity.ok().build();

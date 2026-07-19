@@ -25,7 +25,7 @@ public class QuizServiceImpl implements QuizService {
     private final ObjectMapper objectMapper;
 
     @Override
-    public QuestionDTO getDailyQuestion() {
+    public QuestionPublicDTO getDailyQuestion() {
         // 根据当天日期确定种子，保证每天同一题
         LocalDate today = LocalDate.now();
         long seed = today.atStartOfDay().toEpochSecond(java.time.ZoneOffset.UTC);
@@ -46,7 +46,8 @@ public class QuizServiceImpl implements QuizService {
         }
 
         QuestionEntity entity = questions.get(index);
-        return toDTO(entity);
+        // 安全修复 B1：出题端点不返回 correctIndex/explanation
+        return toPublicDTO(entity);
     }
 
     @Override
@@ -90,9 +91,10 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public Page<QuestionDTO> getRandomQuestions(int page, int size) {
+    public Page<QuestionPublicDTO> getRandomQuestions(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        return questionRepository.findRandom(pageRequest).map(this::toDTO);
+        // 安全修复 B1：出题端点不返回 correctIndex/explanation
+        return questionRepository.findRandom(pageRequest).map(this::toPublicDTO);
     }
 
     @Override
@@ -135,6 +137,27 @@ public class QuizServiceImpl implements QuizService {
         dto.setEventId(entity.getEventId());
         dto.setPersonId(entity.getPersonId());
         dto.setExplanation(entity.getExplanation());
+        dto.setCategory(entity.getCategory());
+        return dto;
+    }
+
+    /** 安全修复 B1：出题端点用此方法，不含 correctIndex/explanation */
+    private QuestionPublicDTO toPublicDTO(QuestionEntity entity) {
+        List<String> options;
+        try {
+            options = objectMapper.readValue(entity.getOptions(), new TypeReference<List<String>>() {});
+        } catch (Exception e) {
+            options = List.of("解析错误", "", "", "");
+        }
+
+        QuestionPublicDTO dto = new QuestionPublicDTO();
+        dto.setId(entity.getId());
+        dto.setQuestion(entity.getQuestion());
+        dto.setOptions(options);
+        dto.setDifficulty(entity.getDifficulty());
+        dto.setDynasty(entity.getDynasty());
+        dto.setEventId(entity.getEventId());
+        dto.setPersonId(entity.getPersonId());
         dto.setCategory(entity.getCategory());
         return dto;
     }
